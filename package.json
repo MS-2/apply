@@ -4,7 +4,6 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
@@ -17,10 +16,14 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@react-navigation/native": "^6.0.2",
+    "@tanstack/react-query": "^5.51.1",
     "expo": "~51.0.18",
     "expo-constants": "~16.0.2",
+    "expo-device": "~6.0.2",
     "expo-font": "~12.0.7",
     "expo-linking": "~6.3.1",
+    "expo-notifications": "~0.28.9",
+    "expo-permissions": "^14.4.0",
     "expo-router": "~3.5.17",
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
@@ -45,5 +48,6 @@
     "react-test-renderer": "18.2.0",
     "typescript": "~5.3.3"
   },
-  "private": true
+  "private": true,
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }
