@@ -1,3 +1,4 @@
+import React from "react";
 import { NotificationProvider } from "@/providers/NotificationProvider";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { Stack } from "expo-router/stack";
