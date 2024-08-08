@@ -1,9 +1,9 @@
 import { Image, StyleSheet, Platform, View, Text } from "react-native";
 
-export default function Fav() {
+export default function Asd() {
   return (
     <View>
-      <Text>favorites</Text>
+      <Text>asd</Text>
     </View>
   );
 }

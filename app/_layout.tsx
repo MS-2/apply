@@ -4,6 +4,7 @@ import * as Notifications from "expo-notifications";
 import { useState, useRef, useEffect } from "react";
 import { Platform } from "react-native";
 import { registerForPushNotificationsAsync } from "@/modules/notifications";
+import { StatusBar } from "expo-status-bar";
 const queryClient = new QueryClient();
 
 export default function RootLayout() {
@@ -48,15 +49,12 @@ export default function RootLayout() {
   }, []);
   return (
     <QueryClientProvider client={queryClient}>
+      <StatusBar style="auto" />
       <Stack>
-        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="screens/(tabs)" options={{title:"index"}} />
+        <Stack.Screen name="+not-found" />
+        <Stack.Screen name="screens/settings" />
       </Stack>
     </QueryClientProvider>
   );
 }
-
-// export default function RootProvider() {
-//   <QueryClientProvider client={queryClient}>
-//     <RootLayout />
-//   </QueryClientProvider>;
-// }
