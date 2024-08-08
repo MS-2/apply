@@ -4,7 +4,6 @@ export default function Fav() {
   return (
     <View>
       <Text>favorites</Text>
-      <Link href="screens/settings">Go to path</Link>
     </View>
   );
 }
