@@ -1,5 +1,7 @@
+import React from "react";
 import { Image, StyleSheet, Platform, View, Text } from "react-native";
 import { Link } from "expo-router";
+
 export default function Fav() {
   return (
     <View>
