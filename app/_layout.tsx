@@ -1,15 +1,24 @@
 import React from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NotificationProvider } from "@/providers/NotificationProvider";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
+import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import { Stack } from "expo-router/stack";
 import { StatusBar } from "expo-status-bar";
-import WebViewScreen from "./screens/webview";
+// import * as SplashScreen from 'expo-splash-screen';
 
+// SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
 
+const asyncStoragePersister = createAsyncStoragePersister({
+  storage: AsyncStorage,
+});
 export default function Page() {
+
+
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider client={queryClient} persistOptions={{ persister: asyncStoragePersister }}>
       <StatusBar style="auto" />
       <NotificationProvider>
         <Stack>
@@ -18,6 +27,6 @@ export default function Page() {
           <Stack.Screen name="screens/webview/index" />
         </Stack>
       </NotificationProvider>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 }

@@ -4,9 +4,20 @@ import { Link } from "expo-router";
 import { useHackerQuery } from "@/hooks/useHackerNewsQuery";
 import { Hit } from "@/types/algoliaResponse";
 import SwipeableItem from "@/components/SwipeableItem";
+import { FontAwesome } from '@expo/vector-icons';
+import useNetworkStatus from "@/hooks/useNetworkStatus";
 const ITEM_HEIGHT = 80; // Ajusta esto según la altura de tus elementos
 export default function Home() {
+  // const { isLoading, error, data, fetchNextPage, hasNextPage, isFetchingNextPage } = useHackerQuery();
   const { isLoading, error, data } = useHackerQuery();
+  const isConnected = useNetworkStatus()
+  React.useEffect(() => {
+    console.log(`esta conectado a internet: ${isConnected}`);
+    if (data?.hits) {
+      console.log(`Cantidad de elementos traídos por useHackerQuery: ${data.hits.length}`);
+    }
+  }, [data]);
+
   const handleDelete = (item: Hit) => {
     // Lógica para eliminar el artículo
   };
@@ -17,9 +28,16 @@ export default function Home() {
     return (
       <SwipeableItem onDelete={() => handleDelete(item)}>
         <TouchableOpacity style={styles.itemContainer}>
+          <View>
+            <FontAwesome name="heart" size={24} color="red" />
+          </View>
           <Link href={{ pathname: "/screens/webview", params: story_url }}>
-            <Text style={styles.text}>Story Title: {story_title?.value ?? "N/A"}</Text>
-            <Text style={styles.text}>Author: {author?.value ?? "N/A"} - {created_at ?? "N/A"}</Text>
+            <View>
+              <Text style={styles.text}>{story_title?.value ?? "N/A"}</Text>
+            </View>
+            <View>
+              <Text style={styles.text}>{author?.value ?? "N/A"} - {created_at ?? "N/A"}</Text>
+            </View>
           </Link>
         </TouchableOpacity>
       </SwipeableItem>
@@ -38,15 +56,23 @@ export default function Home() {
     <SafeAreaView style={styles.container}>
       <FlatList
         data={data?.hits}
+        // data={data?.pages.flatMap(page => page.hits)}
         keyExtractor={(item) => item.objectID}
         renderItem={renderItem}
-        getItemLayout={(data, index) => (
+        getItemLayout={(_data, index) => (
           { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
         )}
         initialNumToRender={10}
         windowSize={5}
-        removeClippedSubviews={true}
+      // removeClippedSubviews={true}
 
+      // onEndReached={() => {
+      //   if (hasNextPage) {
+      //     fetchNextPage();
+      //   }
+      // }}
+      // onEndReachedThreshold={0.5}
+      // ListFooterComponent={isFetchingNextPage ? <ActivityIndicator size="small" /> : null}
       />
     </SafeAreaView>
   );
@@ -57,6 +83,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemContainer: {
+    flex: 1,
+    flexDirection: 'row',
     paddingBottom: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
