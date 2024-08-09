@@ -1,8 +1,10 @@
-import React from "react";
-import { Text, View, FlatList, ActivityIndicator, SafeAreaView, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Text, View, FlatList, ActivityIndicator, SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
 import { useHackerQuery } from "@/hooks/useHackerNewsQuery";
 
+import { Hit } from "@/types/algoliaResponse";
 
 export default function Home() {
   const { isLoading, error, data } = useHackerQuery();
@@ -15,24 +17,41 @@ export default function Home() {
     return <Text>Error: {error.message}</Text>;
   }
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <Link href="articles">a world</Link>
-      <FlatList
-        data={data?.hits}
-        keyExtractor={(item) => item.objectID}
-        renderItem={({ item }) => {
-          const { author, comment_text, story_title, story_url } = item._highlightResult;
+  const renderItem = ({ item }: { item: Hit }) => {
+    const { author, comment_text, story_title, story_url } = item._highlightResult;
 
-          return (
-            <View style={styles.itemContainer}>
+    const renderRightActions = () => (
+      <TouchableOpacity
+        style={styles.deleteButton}
+        onPress={() => alert('delete')}
+      >
+        <Text style={styles.deleteText}>Delete</Text>
+      </TouchableOpacity>
+    );
+
+
+    return (
+      <GestureHandlerRootView>
+        <Swipeable renderRightActions={renderRightActions}>
+          <TouchableOpacity style={styles.itemContainer}>
+            <Link href={{ pathname: "/screens/webview", params: story_url }}>
               <Text style={styles.text}>Author: {author?.value ?? "N/A"}</Text>
               <Text style={styles.text}>Comment: {comment_text?.value ?? "N/A"}</Text>
               <Text style={styles.text}>Story Title: {story_title?.value ?? "N/A"}</Text>
               <Text style={styles.text}>Story URL: {story_url?.value ?? "N/A"}</Text>
-            </View>
-          );
-        }}
+            </Link>
+          </TouchableOpacity>
+        </Swipeable>
+      </GestureHandlerRootView>
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={data?.hits}
+        keyExtractor={(item) => item.objectID}
+        renderItem={renderItem}
       />
     </SafeAreaView>
   );
@@ -52,8 +71,22 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: "100%",
     paddingHorizontal: 20,
+    backgroundColor: "#fff",
   },
   text: {
     fontSize: 16,
+  },
+  deleteButton: {
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
+    height: 60,
+    width: 100,
+  },
+  deleteText: {
+    color: "#fff",
+    fontSize: 16,
+    textAlign: "center",
+    lineHeight: 60,
   },
 });

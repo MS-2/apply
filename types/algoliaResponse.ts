@@ -1,4 +1,4 @@
-type HighlightResult = {
+export type HighlightResult = {
   matchLevel: string;
   matchedWords: string[];
   value: string;
@@ -11,7 +11,7 @@ type HighlightResultContainer = {
   story_url: HighlightResult;
 };
 
-type Hit = {
+export type Hit = {
   _highlightResult: HighlightResultContainer;
   _tags: string[];
   author: string;

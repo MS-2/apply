@@ -4,9 +4,11 @@
     "jsx": "react",
     "strict": true,
     "paths": {
+      "*": ["./node_modules/*"],
       "@/*": ["./*"],
       "@/hooks": ["./*"]
-    }
+    },
+    "types": ["react", "react-native", "react-native-webview"]
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }
