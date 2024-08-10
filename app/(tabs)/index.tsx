@@ -9,9 +9,10 @@ import useNetworkStatus from "@/hooks/useNetworkStatus";
 import { FlashList } from '@shopify/flash-list';
 import { Surface, Text, Avatar, Button, Card } from 'react-native-paper';
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useHeaderHeight } from "@react-navigation/elements";
 const ITEM_HEIGHT = 80; // Ajusta esto según la altura de tus elementos
 export default function Home() {
-
+  const headerHeight = useHeaderHeight()
   const { isLoading, error, data, refetch } = useHackerQuery();
   const isConnected = useNetworkStatus()
 
@@ -72,7 +73,7 @@ export default function Home() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ ...styles.container, paddingTop: headerHeight }} >
       {/* <FlashList
         data={data?.hits}
         keyExtractor={(item) => item.objectID}
@@ -86,6 +87,7 @@ export default function Home() {
         }
       /> */}
       <FlatList
+        contentInsetAdjustmentBehavior="automatic"
         data={data?.hits}
         keyExtractor={(item) => item.objectID}
         renderItem={renderItem}

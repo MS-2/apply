@@ -22,7 +22,15 @@ export default function Page() {
       <StatusBar style="auto" />
       <NotificationProvider>
         <Stack>
-          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="(tabs)" options={{
+            headerBlurEffect: "regular",
+            headerTitle: "Mobile News",
+            headerTitleAlign: "center",
+            headerTransparent: true,
+            headerLargeTitle: true,
+            headerLargeTitleStyle: { color: 'purple' },
+            headerLargeTitleShadowVisible: false
+          }} />
           <Stack.Screen name="+not-found" />
           <Stack.Screen name="screens/webview/index" />
         </Stack>
