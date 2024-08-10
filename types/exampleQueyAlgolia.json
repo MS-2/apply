@@ -1,0 +1,78 @@
+{
+  "exhaustive": {
+    "nbHits": false,
+    "typo": false
+  },
+  "exhaustiveNbHits": false,
+  "exhaustiveTypo": false,
+  "hits": [
+    {
+      "_highlightResult": {
+        "author": {
+          "matchLevel": "none",
+          "matchedWords": [],
+          "value": "Jeema101"
+        },
+        "comment_text": {
+          "fullyHighlighted": false,
+          "matchLevel": "full",
+          "matchedWords": ["mobile"],
+          "value": "It's very strange - some people are lucid and \u003Cem\u003Emobile\u003C/em\u003E up until nearly the end, and others are 'out of it' for a long time.  My mother was mostly delirious and bedridden for the entire last month of her life before dying from cancer.\u003Cp\u003EI suppose if the person is able to find peace with what's happening, then maybe it's better to be lucid, but for others, maybe being 'out of it' is a blessing."
+        },
+        "story_title": {
+          "matchLevel": "none",
+          "matchedWords": [],
+          "value": "Jake Seliger has died"
+        },
+        "story_url": {
+          "matchLevel": "none",
+          "matchedWords": [],
+          "value": "https://marginalrevolution.com/marginalrevolution/2024/08/jake-seliger-is-dead.html"
+        }
+      },
+      "_tags": ["comment", "author_Jeema101", "story_41201555"],
+      "author": "Jeema101",
+      "comment_text": "It&#x27;s very strange - some people are lucid and mobile up until nearly the end, and others are &#x27;out of it&#x27; for a long time.  My mother was mostly delirious and bedridden for the entire last month of her life before dying from cancer.\u003Cp\u003EI suppose if the person is able to find peace with what&#x27;s happening, then maybe it&#x27;s better to be lucid, but for others, maybe being &#x27;out of it&#x27; is a blessing.",
+      "created_at": "2024-08-09T22:37:25Z",
+      "created_at_i": 1723243045,
+      "objectID": "41205939",
+      "parent_id": 41203608,
+      "story_id": 41201555,
+      "story_title": "Jake Seliger has died",
+      "story_url": "https://marginalrevolution.com/marginalrevolution/2024/08/jake-seliger-is-dead.html",
+      "updated_at": "2024-08-09T23:05:36Z"
+    }
+  ],
+  "hitsPerPage": 20,
+  "nbHits": 322954,
+  "nbPages": 50,
+  "page": 0,
+  "params": "query=mobile&advancedSyntax=true&analyticsTags=backend",
+  "processingTimeMS": 13,
+  "processingTimingsMS": {
+    "_request": {
+      "roundTrip": 14
+    },
+    "afterFetch": {
+      "format": {
+        "highlighting": 1,
+        "total": 1
+      }
+    },
+    "fetch": {
+      "query": 6,
+      "total": 7
+    },
+    "getIdx": {
+      "load": {
+        "dicts": 1,
+        "gens": 2,
+        "total": 4
+      },
+      "total": 4
+    },
+    "total": 13
+  },
+  "query": "mobile",
+  "serverTimeMS": 15
+}

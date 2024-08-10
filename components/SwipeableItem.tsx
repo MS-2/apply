@@ -1,7 +1,6 @@
-import React, { ReactNode } from 'react';
-import { Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { ReactNode, useState, useRef } from 'react';
+import { Text, TouchableOpacity, StyleSheet, View } from 'react-native';
 import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
-import { FontAwesome } from '@expo/vector-icons';
 
 type SwipeableItemProps = {
   children: ReactNode;
@@ -9,18 +8,49 @@ type SwipeableItemProps = {
 }
 
 const SwipeableItem: React.FC<SwipeableItemProps> = ({ children, onDelete }) => {
-  const renderRightActions = () => (
-    <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
-      <FontAwesome name="trash" size={24} color="white" />
-      <Text style={styles.deleteText}>Delete</Text>
-    </TouchableOpacity>
-  );
+  const [actionState, setActionState] = useState<'idle' | 'dragging'>('idle');
+
+  const handleOnDrag = () => {
+    setActionState('dragging');
+
+  };
+
+  const handleOnEnd = () => {
+    setTimeout(() => {
+      setActionState('idle');
+      onDelete(); // Call the onDelete function after the action is completed
+    }, 300); // Adjust the timeout as needed to match the animation duration
+  };
+
+  const renderRightActions = () => {
+    let backgroundColor: string;
+    let text: string;
+
+    switch (actionState) {
+
+      case 'dragging':
+        backgroundColor = 'red';
+        text = 'deleted';
+        break;
+
+      default:
+        backgroundColor = 'orange';
+        text = 'borrando';
+    }
+
+    return (
+      <View style={{ width: '100%', backgroundColor, justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ color: 'white' }}>{text}</Text>
+      </View>
+    );
+  };
 
   return (
     <GestureHandlerRootView>
       <Swipeable
         renderRightActions={renderRightActions}
-        friction={2}
+        onSwipeableOpen={handleOnDrag}
+        onSwipeableClose={handleOnEnd}
         overshootRight={false}
       >
         {children}
@@ -28,21 +58,5 @@ const SwipeableItem: React.FC<SwipeableItemProps> = ({ children, onDelete }) => 
     </GestureHandlerRootView>
   );
 };
-
-const styles = StyleSheet.create({
-  deleteButton: {
-    backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    marginBottom: 10,
-  },
-  deleteText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-});
 
 export default SwipeableItem;

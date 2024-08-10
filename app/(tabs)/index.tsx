@@ -1,16 +1,28 @@
-import React from "react";
-import { Text, FlatList, ActivityIndicator, SafeAreaView, StyleSheet, TouchableOpacity, View } from "react-native";
-import { Link } from "expo-router";
+import React, { useCallback, useState } from "react";
+import { FlatList, ActivityIndicator, SafeAreaView, StyleSheet, TouchableOpacity, View, RefreshControl } from "react-native";
+import { Link, LinkProps } from "expo-router";
 import { useHackerQuery } from "@/hooks/useHackerNewsQuery";
 import { Hit } from "@/types/algoliaResponse";
 import SwipeableItem from "@/components/SwipeableItem";
 import { FontAwesome } from '@expo/vector-icons';
 import useNetworkStatus from "@/hooks/useNetworkStatus";
+import { FlashList } from '@shopify/flash-list';
+import { Surface, Text, Avatar, Button, Card } from 'react-native-paper';
+import Ionicons from "@expo/vector-icons/Ionicons";
 const ITEM_HEIGHT = 80; // Ajusta esto según la altura de tus elementos
 export default function Home() {
-  // const { isLoading, error, data, fetchNextPage, hasNextPage, isFetchingNextPage } = useHackerQuery();
-  const { isLoading, error, data } = useHackerQuery();
+
+  const { isLoading, error, data, refetch } = useHackerQuery();
   const isConnected = useNetworkStatus()
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  }, [refetch]);
+
   React.useEffect(() => {
     console.log(`esta conectado a internet: ${isConnected}`);
     if (data?.hits) {
@@ -21,25 +33,32 @@ export default function Home() {
   const handleDelete = (item: Hit) => {
     // Lógica para eliminar el artículo
   };
+  // const LeftContent = props => <Avatar.Icon {...props} icon="heart" />
+  const LeftContent = props => <Ionicons size={28} style={[{ marginBottom: -3 }]} name={false ? "heart" : "heart-outline"} color={"red"} {...props} />
   const renderItem = ({ item }: { item: Hit }) => {
     const { author, comment_text, story_title, story_url } = item._highlightResult;
     const { created_at, created_at_i, updated_at } = item
 
     return (
       <SwipeableItem onDelete={() => handleDelete(item)}>
-        <TouchableOpacity style={styles.itemContainer}>
-          <View>
-            <FontAwesome name="heart" size={24} color="red" />
-          </View>
-          <Link href={{ pathname: "/screens/webview", params: story_url }}>
-            <View>
-              <Text style={styles.text}>{story_title?.value ?? "N/A"}</Text>
-            </View>
-            <View>
-              <Text style={styles.text}>{author?.value ?? "N/A"} - {created_at ?? "N/A"}</Text>
-            </View>
-          </Link>
-        </TouchableOpacity>
+        <Link href={{ pathname: "/screens/webview", params: story_url }} asChild>
+          <Card style={{
+            padding: 8,
+            margin: 8,
+            // height: ITEM_HEIGHT,
+            width: "100%",
+            paddingBottom: 20,
+            borderBottomWidth: 1,
+            borderBottomColor: "#ccc",
+            marginBottom: 10,
+          }} elevation={5}>
+            <Card.Title title={story_title?.value ?? "N/A"} left={LeftContent} />
+            <Card.Content>
+
+              <Text variant="bodyMedium">{`${author?.value} - ${new Date(created_at.toLocaleString())}`}</Text>
+            </Card.Content>
+          </Card>
+        </Link>
       </SwipeableItem>
     );
   };
@@ -54,25 +73,33 @@ export default function Home() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* <FlashList
+        data={data?.hits}
+        keyExtractor={(item) => item.objectID}
+        renderItem={renderItem}
+        estimatedItemSize={20}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+      /> */}
       <FlatList
         data={data?.hits}
-        // data={data?.pages.flatMap(page => page.hits)}
         keyExtractor={(item) => item.objectID}
         renderItem={renderItem}
         getItemLayout={(_data, index) => (
           { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
         )}
-        initialNumToRender={10}
-        windowSize={5}
-      // removeClippedSubviews={true}
-
-      // onEndReached={() => {
-      //   if (hasNextPage) {
-      //     fetchNextPage();
-      //   }
-      // }}
-      // onEndReachedThreshold={0.5}
-      // ListFooterComponent={isFetchingNextPage ? <ActivityIndicator size="small" /> : null}
+        initialNumToRender={20}
+        windowSize={10}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
       />
     </SafeAreaView>
   );

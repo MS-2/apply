@@ -15,7 +15,7 @@ export default function TabLayout() {
           title: "Deletes",
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "home" : "home-outline"}
+              name='trash'
               color={color}
             />
           ),
@@ -37,9 +37,9 @@ export default function TabLayout() {
         name="favorites"
         options={{
           title: "Favorites",
-          tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: ({ color }) => (
             <TabBarIcon
-              name={focused ? "code-slash" : "code-slash-outline"}
+              name="heart"
               color={color}
             />
           ),

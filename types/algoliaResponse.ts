@@ -2,6 +2,7 @@ export type HighlightResult = {
   matchLevel: string;
   matchedWords: string[];
   value: string;
+  // fullyHighlighted?: boolean; // Agregado para cubrir el nuevo campo opcional
 };
 
 type HighlightResultContainer = {
@@ -26,12 +27,44 @@ export type Hit = {
   updated_at: string;
 };
 
+export type ProcessingTimingsMS = {
+  _request: {
+    roundTrip: number;
+  };
+  afterFetch: {
+    format: {
+      highlighting: number;
+      total: number;
+    };
+  };
+  fetch: {
+    query: number;
+    total: number;
+  };
+  getIdx: {
+    load: {
+      dicts: number;
+      gens: number;
+      total: number;
+    };
+    total: number;
+  };
+  total: number;
+};
+
 export type AlgoliaResponse = {
   exhaustive: {
     nbHits: boolean;
     typo: boolean;
   };
-  exhaustiveNbHits: boolean;
-  exhaustiveTypo: boolean;
   hits: Hit[];
+  hitsPerPage: number;
+  nbHits: number;
+  nbPages: number;
+  page: number;
+  params: string;
+  processingTimeMS: number;
+  processingTimingsMS: ProcessingTimingsMS;
+  query: string;
+  serverTimeMS: number;
 };
