@@ -13,7 +13,7 @@ export default function TabLayout() {
         name="deleted"
         options={{
           title: "Deletes",
-          tabBarIcon: ({ color, focused }) => (
+          tabBarIcon: ({ color }) => (
             <TabBarIcon
               name='trash'
               color={color}
