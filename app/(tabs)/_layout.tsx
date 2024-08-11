@@ -1,14 +1,17 @@
+import { LinearGradient } from "expo-linear-gradient";
 import { Tabs } from "expo-router";
 import React from "react";
 import { TabBarIcon } from "../../components/TabBarIcon";
 
 export default function TabLayout() {
   return (
+    // <LinearGradient style={{ flex: 1 }} colors={['#4c669f', '#3b5998', '#192f6a']} >
     <Tabs
       screenOptions={{
         headerShown: false,
       }}
     >
+
       <Tabs.Screen
         name="deleted"
         options={{
@@ -45,6 +48,8 @@ export default function TabLayout() {
           ),
         }}
       />
+
     </Tabs>
+    // </LinearGradient>
   );
 }
