@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, Platform, View, Text, FlatList, RefreshControl, SafeAreaView } from "react-native";
-import { Link } from "expo-router";
 import { Hit } from "@/types/algoliaResponse";
 import { useSQLiteContext } from "expo-sqlite";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { LinearGradient } from "expo-linear-gradient";
 import { RenderList } from '../../components/RenderList'
+import { ITEM_HEIGHT } from "@/constants";
+import { useFocusEffect } from '@react-navigation/native';
 export default function Fav() {
   const db = useSQLiteContext();
-  const tableHits: Hit[] = db.getAllSync('SELECT * from hits')
-  const headerHeight = useHeaderHeight()
+
+  const [tableHits, setTableHits] = useState<Hit[]>([]);
+  const headerHeight = useHeaderHeight();
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const asd: Hit[] = db.getAllSync('SELECT * from favorites')
+      setTableHits(asd)
+    }, [])
+  );
   return (
 
     <SafeAreaView style={{ flex: 1, paddingTop: headerHeight }} >
@@ -20,9 +29,9 @@ export default function Fav() {
           data={tableHits}
           keyExtractor={({ objectID }) => objectID}
           renderItem={({ item }) => <RenderList {...item} />}
-          // getItemLayout={(_data, index) => (
-          //   { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
-          // )}
+          getItemLayout={(_data, index) => (
+            { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
+          )}
           initialNumToRender={20}
           windowSize={10}
         // refreshControl={

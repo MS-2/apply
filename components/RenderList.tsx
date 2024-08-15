@@ -8,11 +8,13 @@ import SwipeableItem from "@/components/SwipeableItem";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { Hit } from "@/types/algoliaResponse";
+import { addHitToFavorites } from "@/app/_layout";
 
 export const RenderList: React.FC<Hit> = ({ author, created_at, objectID, story_title, story_url }) => {
     const [isFavorited, setIsFavorited] = useState(false);
 
     const toggleHeart = () => {
+
         setIsFavorited(!isFavorited);
     };
 
@@ -20,14 +22,11 @@ export const RenderList: React.FC<Hit> = ({ author, created_at, objectID, story_
         // Lógica para eliminar el artículo
     };
 
-    const handleFavorites = (objectID: string) => {
-        // Lógica para manejar favoritos
-    };
 
     const date = new Date(created_at).toLocaleDateString();
 
     return (
-        <SwipeableItem onDelete={() => handleDelete(objectID)}>
+        <SwipeableItem onDelete={() => handleDelete(objectID)} onSwipeRight={() => addHitToFavorites(objectID)}>
             <View style={styles.container}>
                 <Link href={{ pathname: "/screens/webview", params: { value: story_url } }} asChild>
                     <TouchableOpacity style={styles.linkContainer}>
