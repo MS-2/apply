@@ -8,7 +8,9 @@
       "@/*": ["./*"],
       "@/hooks": ["./*"]
     },
-    "types": ["react", "react-native", "react-native-webview"]
+    "types": ["react", "react-native", "react-native-webview"],
+    "module": "esnext",
+    "target": "es2017"
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }
