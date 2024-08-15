@@ -1,36 +1,46 @@
-import { LinearGradient } from "expo-linear-gradient";
-import { Tabs } from "expo-router";
 import React from "react";
+import { Tabs } from "expo-router";
+import { StyleSheet } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { TabBarIcon } from "../../components/TabBarIcon";
 
-export default function TabLayout() {
+const TabLayout: React.FC = () => {
   return (
-    // <LinearGradient style={{ flex: 1 }} colors={['#4c669f', '#3b5998', '#192f6a']} >
     <Tabs
       screenOptions={{
         headerShown: false,
+        tabBarShowLabel: true,
+        tabBarStyle: styles.tabBar,
+        tabBarLabelStyle: styles.tabBarLabel,
+        tabBarBackground: () => (
+          <LinearGradient
+            colors={['#FFFF00', '#0000FF', '#FF0000']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={StyleSheet.absoluteFill}
+          />
+        ),
+
       }}
     >
-
       <Tabs.Screen
         name="deleted"
         options={{
-          title: "Deletes",
+          title: "Deleted",
+          tabBarActiveTintColor: '#FF0000',
           tabBarIcon: ({ color }) => (
-            <TabBarIcon
-              name='trash'
-              color={color}
-            />
+            <TabBarIcon name='trash' color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="index"
         options={{
-          title: "Articles",
+          title: "Feed",
+          tabBarActiveTintColor: '#FFFFFF',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name={focused ? "code-slash" : "code-slash-outline"}
+              name={focused ? "book-outline" : "newspaper"}
               color={color}
             />
           ),
@@ -40,16 +50,35 @@ export default function TabLayout() {
         name="favorites"
         options={{
           title: "Favorites",
-          tabBarIcon: ({ color }) => (
+          tabBarActiveTintColor: '#FFFF00',
+          tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
-              name="heart"
+              name={focused ? "star" : "star-outline"}
               color={color}
             />
           ),
         }}
       />
-
     </Tabs>
-    // </LinearGradient>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  tabBar: {
+    borderTopWidth: 0,
+    height: 70,
+    paddingBottom: 10,
+    paddingTop: 10,
+    elevation: 5, // Shadows on Android
+    shadowColor: '#000000', // Shadows on iOS
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  tabBarLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+});
+
+export default TabLayout;

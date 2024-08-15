@@ -4,7 +4,6 @@ import { AppState, AppStateStatus } from "react-native";
 export function useAppState(onChange: (status: AppStateStatus) => void) {
   useEffect(() => {
     const subscription = AppState.addEventListener("change", onChange);
-    console.log(subscription);
     return () => {
       subscription.remove();
     };
