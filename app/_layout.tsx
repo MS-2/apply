@@ -91,9 +91,6 @@ export const addHitToFavorites = async (objectID: string) => {
   const db = await SQLite.openDatabaseAsync('test.db');
   console.log(objectID)
   try {
-    // Obtener el elemento de la tabla 'hits' usando el 'objectID'
-    // db.execAsync(`drop table favorites`);
-
     const hit = await db.getFirstAsync<Hit>(`SELECT * FROM hits WHERE objectID = ?`, objectID);
 
     if (hit) {
@@ -131,45 +128,24 @@ export const addHitToFavorites = async (objectID: string) => {
   }
 };
 
+export const removeHitFromFavorites = async (objectID: string) => {
+  const db = await SQLite.openDatabaseAsync('test.db');
+  try {
+    const result = await db.runAsync(`DELETE FROM favorites WHERE objectID = ?`, objectID);
+
+    if (result.changes > 0) {
+      console.log(`Item with objectID: ${objectID} removed from favorites`);
+    } else {
+      console.log(`No item with objectID: ${objectID} found in favorites`);
+    }
+  } catch (error) {
+    console.error("Error removing item from favorites:", error);
+  }
+};
+
 export default function Page() {
 
 
-  // useEffect(() => {
-  //   const setupDatabase = async () => {
-  //     console.log('se ejecuti?')
-  //     const db = await SQLite.openDatabaseAsync('databaseName');
-
-  //     // Configuración y creación de la tabla
-  //     await db.execAsync(`
-  //       PRAGMA journal_mode = WAL;
-  //       CREATE TABLE IF NOT EXISTS juan (
-  //         id INTEGER PRIMARY KEY NOT NULL,
-  //         author TEXT NOT NULL
-  //       );
-  //     `);
-
-  //     // Insertar datos de ejemplo
-  //     await db.runAsync('INSERT INTO juan (author) VALUES (?)', 'John Doe');
-
-  //     // Leer el primer artículo
-  //     const firstRow = await db.getFirstAsync('SELECT * FROM juan');
-  //     console.log(firstRow);
-
-  //     // Leer todos los artículos
-  //     const allRows = await db.getAllAsync('SELECT * FROM juan');
-  //     for (const row of allRows) {
-  //       console.log(row);
-  //     }
-
-  //     // Actualizar un artículo
-  //     await db.runAsync('UPDATE juan SET author = ? WHERE id = 4', 'Advanced React Native', firstRow.id);
-
-  //     // Eliminar un artículo
-  //     await db.runAsync('DELETE FROM juan WHERE id = 1');
-  //   };
-
-  //   setupDatabase();
-  // }, []);
 
   useLayoutEffect(() => {
 

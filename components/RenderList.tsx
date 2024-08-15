@@ -1,50 +1,41 @@
-import React, { useState } from "react";
+import React from "react";
 import { TouchableOpacity, View, StyleSheet } from "react-native";
-
 import { Text } from 'react-native-paper';
 import { Link } from "expo-router";
-
 import SwipeableItem from "@/components/SwipeableItem";
-import Ionicons from "@expo/vector-icons/Ionicons";
-
 import { Hit } from "@/types/algoliaResponse";
-import { addHitToFavorites } from "@/app/_layout";
 
-export const RenderList: React.FC<Hit> = ({ author, created_at, objectID, story_title, story_url }) => {
-    const [isFavorited, setIsFavorited] = useState(false);
+// Define the type for the component props
+type RenderListProps = Hit & {
+    onSwipeRight?: (objectID: string) => Promise<void>;
+    onSwipeLeft?: (objectID: string) => Promise<void>;
+};
 
-    const toggleHeart = () => {
-
-        setIsFavorited(!isFavorited);
-    };
-
-    const handleDelete = (objectID: string) => {
-        // Lógica para eliminar el artículo
-    };
-
-
+export const RenderList: React.FC<RenderListProps> = ({
+    author,
+    created_at,
+    objectID,
+    story_title,
+    story_url,
+    onSwipeRight,
+    onSwipeLeft,
+}) => {
     const date = new Date(created_at).toLocaleDateString();
 
     return (
-        <SwipeableItem onDelete={() => handleDelete(objectID)} onSwipeRight={() => addHitToFavorites(objectID)}>
+        <SwipeableItem
+            onSwipeLeft={() => onSwipeLeft?.(objectID)}
+            onSwipeRight={() => onSwipeRight?.(objectID)}
+        >
             <View style={styles.container}>
                 <Link href={{ pathname: "/screens/webview", params: { value: story_url } }} asChild>
-                    <TouchableOpacity style={styles.linkContainer}>
+                    <TouchableOpacity>
                         <Text variant="titleMedium">
                             {story_title ?? "N/A"}
                         </Text>
                         <Text variant="bodyMedium">{`${author} - ${date}`}</Text>
                     </TouchableOpacity>
                 </Link>
-                <View style={styles.iconContainer}>
-                    <TouchableOpacity onPress={toggleHeart}>
-                        <Ionicons
-                            size={44}
-                            name={isFavorited ? "heart" : "heart-outline"}
-                            color={"red"}
-                        />
-                    </TouchableOpacity>
-                </View>
             </View>
         </SwipeableItem>
     );
@@ -61,16 +52,6 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         padding: 8,
         paddingBottom: 20,
-    },
-    iconContainer: {
-        alignItems: 'center',
-        backgroundColor: 'green',
-        justifyContent: "center",
-        width: '25%',
-    },
-    linkContainer: {
-        backgroundColor: 'grey',
-        width: '75%',
     },
 });
 

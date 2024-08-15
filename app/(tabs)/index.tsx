@@ -9,6 +9,7 @@ import { useSQLiteContext } from "expo-sqlite";
 
 import { RenderList } from '../../components/RenderList'
 import { ITEM_HEIGHT } from "@/constants";
+import { addHitToFavorites } from "../_layout";
 
 export default function Home() {
   const db = useSQLiteContext();
@@ -48,7 +49,7 @@ export default function Home() {
           // data={data?.hits}
           data={tableHits}
           keyExtractor={({ objectID }) => objectID}
-          renderItem={({ item }) => <RenderList  {...item} />}
+          renderItem={({ item }) => <RenderList  {...item} onSwipeRight={addHitToFavorites} onSwipeLeft={(objectID: string) => console.log('eliminado')} />}
           getItemLayout={(_data, index) => (
             { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
           )}

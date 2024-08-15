@@ -1,14 +1,3 @@
-// import React from "react";
-// import { WebView } from 'react-native-webview';
-// import { useLocalSearchParams } from 'expo-router';
-// import { HighlightResult } from "@/types/algoliaResponse";
-
-// const WebViewScreen = () => {
-//     const { value } = useLocalSearchParams<HighlightResult>()
-//     return <WebView source={{ uri: value }} />;
-// };
-
-// export default WebViewScreen;
 import React from "react";
 import { WebView } from 'react-native-webview';
 import { useLocalSearchParams } from 'expo-router';

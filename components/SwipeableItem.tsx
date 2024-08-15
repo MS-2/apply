@@ -4,19 +4,19 @@ import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler'
 
 type SwipeableItemProps = {
   children: ReactNode;
-  onDelete: () => void;
+  onSwipeLeft: () => void;
   onSwipeRight: () => void;
 }
 
-const SwipeableItem: React.FC<SwipeableItemProps> = ({ children, onDelete, onSwipeRight }) => {
+const SwipeableItem: React.FC<SwipeableItemProps> = ({ children, onSwipeLeft, onSwipeRight }) => {
   const [actionState, setActionState] = useState<'idle' | 'dragging'>('idle');
 
   const handleSwipeableOpen = (direction: 'left' | 'right') => {
     setActionState('idle');
     if (direction === 'left') {
-      onSwipeRight(); // Trigger onSwipeRight when swiped left
+      onSwipeRight();
     } else if (direction === 'right') {
-      onDelete(); // Trigger onDelete when swiped right
+      onSwipeLeft();
     }
   };
   const handleOnDrag = () => {
