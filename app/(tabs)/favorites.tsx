@@ -7,7 +7,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { RenderList } from '../../components/RenderList'
 import { ITEM_HEIGHT } from "@/constants";
 import { useFocusEffect } from '@react-navigation/native';
-import { removeHitFromFavorites } from "../_layout";
+import { removeHitFromFavorites } from "@/data/Tasks";
 export default function Fav() {
   const db = useSQLiteContext();
 

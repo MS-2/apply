@@ -9,7 +9,7 @@ import { useSQLiteContext } from "expo-sqlite";
 
 import { RenderList } from '../../components/RenderList'
 import { ITEM_HEIGHT } from "@/constants";
-import { addHitToFavorites, removeHitFromFeed } from "../_layout";
+import { removeHitFromFeed, addHitToFavorites } from "@/data/Tasks";
 
 export default function Home() {
   const db = useSQLiteContext();
