@@ -29,7 +29,7 @@ export default function Fav() {
           // data={data?.hits}
           data={tableHits}
           keyExtractor={({ objectID }) => objectID}
-          renderItem={({ item }) => <RenderList {...item} onSwipeRight={removeHitFromFavorites} />}
+          renderItem={({ item }) => <RenderList {...item} onSwipeLeft={removeHitFromFavorites} />}
           getItemLayout={(_data, index) => (
             { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
           )}

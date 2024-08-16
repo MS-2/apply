@@ -29,11 +29,11 @@ export const RenderList: React.FC<RenderListProps> = ({
         >
             <View style={styles.container}>
                 <Link href={{ pathname: "/screens/webview", params: { value: story_url } }} asChild>
-                    <TouchableOpacity>
-                        <Text variant="titleMedium">
+                    <TouchableOpacity style={styles.touchable}>
+                        <Text style={styles.title}>
                             {story_title ?? "N/A"}
                         </Text>
-                        <Text variant="bodyMedium">{`${author} - ${date}`}</Text>
+                        <Text style={styles.subtitle}>{`${author} - ${date}`}</Text>
                     </TouchableOpacity>
                 </Link>
             </View>
@@ -43,15 +43,35 @@ export const RenderList: React.FC<RenderListProps> = ({
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'rgba(255,255,255,0.5)',
+        backgroundColor: '#FFFFFF',
         borderBottomWidth: 1,
-        borderColor: "rgba(255, 255, 255, 0.25)",
+        borderColor: '#E0E0E0',
         borderRadius: 16,
-        flexDirection: "row",
+        flexDirection: 'row',
         margin: 8,
         marginBottom: 10,
-        padding: 8,
+        padding: 10,
         paddingBottom: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 2,
+    },
+    touchable: {
+        flex: 1,
+        padding: 10,
+        borderRadius: 8,
+    },
+    title: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 4,
+    },
+    subtitle: {
+        fontSize: 14,
+        color: '#555',
     },
 });
 

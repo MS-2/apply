@@ -9,7 +9,7 @@ import { useSQLiteContext } from "expo-sqlite";
 
 import { RenderList } from '../../components/RenderList'
 import { ITEM_HEIGHT } from "@/constants";
-import { addHitToFavorites } from "../_layout";
+import { addHitToFavorites, removeHitFromFeed } from "../_layout";
 
 export default function Home() {
   const db = useSQLiteContext();
@@ -43,13 +43,15 @@ export default function Home() {
 
   return (
     <SafeAreaView style={{ flex: 1, paddingTop: headerHeight }} >
-      <LinearGradient style={{ flex: 1 }} colors={['#474bff', '#bc48ff', 'transparent']} start={{ x: 0.2, y: 0.6 }}  >
+      <LinearGradient style={{ flex: 1 }} colors={['#E3F2FD', '#BBDEFB', '#90CAF9']} // Tonos de azul sutiles
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}>
         <FlatList
           contentInsetAdjustmentBehavior="automatic"
           // data={data?.hits}
           data={tableHits}
           keyExtractor={({ objectID }) => objectID}
-          renderItem={({ item }) => <RenderList  {...item} onSwipeRight={addHitToFavorites} onSwipeLeft={(objectID: string) => console.log('eliminado')} />}
+          renderItem={({ item }) => <RenderList  {...item} onSwipeRight={addHitToFavorites} onSwipeLeft={removeHitFromFeed} />}
           getItemLayout={(_data, index) => (
             { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
           )}
