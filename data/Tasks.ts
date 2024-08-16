@@ -128,3 +128,26 @@ export const removeHitFromFeed = async (objectID: string) => {
     );
   }
 };
+
+export const saveHitsToFeed = async (db: any, hits: Hit[]) => {
+  for (const hit of hits) {
+    await db.runAsync(
+      `INSERT OR REPLACE INTO hits (
+        objectID, author, comment_text, created_at, created_at_i, 
+        parent_id, story_id, story_title, story_url, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        hit.objectID,
+        hit.author,
+        hit.comment_text,
+        hit.created_at,
+        hit.created_at_i,
+        hit.parent_id,
+        hit.story_id,
+        hit.story_title,
+        hit.story_url,
+        hit.updated_at,
+      ]
+    );
+  }
+};

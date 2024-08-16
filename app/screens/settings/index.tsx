@@ -1,11 +1,14 @@
+import ScreenWrapper from "@/components/ScreensWrapper";
 import React from "react";
 import { View, Text, StyleSheet } from 'react-native';
 
 const Settings: React.FC = () => {
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Hello World</Text>
-        </View>
+        <ScreenWrapper>
+            <View style={styles.container}>
+                <Text style={styles.text}>Hello World</Text>
+            </View>
+        </ScreenWrapper>
     );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { FlatList, SafeAreaView, StyleSheet } from "react-native";
+import { FlatList, StyleSheet } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import RenderList from "@/components/RenderList";
 import { ITEM_HEIGHT } from "@/constants";
@@ -7,13 +7,12 @@ import { Hit } from "@/types/algoliaResponse";
 import { useSQLiteContext } from "expo-sqlite";
 import { useFocusEffect } from "expo-router";
 import { removeHitFromDeleted } from "@/data/Tasks";
+import ScreenWrapper from "@/components/ScreensWrapper";
 
 const DeletedItemsScreen: React.FC = () => {
   const db = useSQLiteContext();
   const [deletedHits, setDeletedHits] = useState<Hit[]>([]);
-  const headerHeight = useHeaderHeight();
 
-  // Fetch deleted items from the database when the screen is focused
   useFocusEffect(
     useCallback(() => {
       const fetchDeletedHits = async () => {
@@ -26,7 +25,7 @@ const DeletedItemsScreen: React.FC = () => {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1, paddingTop: headerHeight }}>
+    <ScreenWrapper>
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         data={deletedHits}
@@ -40,7 +39,7 @@ const DeletedItemsScreen: React.FC = () => {
         initialNumToRender={20}
         windowSize={10}
       />
-    </SafeAreaView>
+    </ScreenWrapper>
   );
 };
 

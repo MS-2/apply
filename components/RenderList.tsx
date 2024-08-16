@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { TouchableOpacity, View, StyleSheet } from "react-native";
 import { Text } from 'react-native-paper';
 import { Link } from "expo-router";
@@ -21,7 +21,6 @@ export const RenderList: React.FC<RenderListProps> = ({
     onSwipeLeft,
 }) => {
     const date = new Date(created_at).toLocaleDateString();
-
     return (
         <SwipeableItem
             onSwipeLeft={() => onSwipeLeft?.(objectID)}
