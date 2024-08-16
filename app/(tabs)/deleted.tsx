@@ -6,6 +6,7 @@ import { ITEM_HEIGHT } from "@/constants";
 import { Hit } from "@/types/algoliaResponse";
 import { useSQLiteContext } from "expo-sqlite";
 import { useFocusEffect } from "expo-router";
+import { removeHitFromDeleted } from "@/data/Tasks";
 
 const DeletedItemsScreen: React.FC = () => {
   const db = useSQLiteContext();
@@ -30,7 +31,7 @@ const DeletedItemsScreen: React.FC = () => {
         contentInsetAdjustmentBehavior="automatic"
         data={deletedHits}
         keyExtractor={({ objectID }) => objectID}
-        renderItem={({ item }) => <RenderList {...item} />}
+        renderItem={({ item }) => <RenderList {...item} onSwipeRight={removeHitFromDeleted} />}
         getItemLayout={(_data, index) => ({
           length: ITEM_HEIGHT,
           offset: ITEM_HEIGHT * index,

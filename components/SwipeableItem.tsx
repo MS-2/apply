@@ -1,6 +1,6 @@
 import React, { ReactNode, useState, useRef } from 'react';
 import { Text, TouchableOpacity, StyleSheet, View } from 'react-native';
-import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Swipeable, GestureHandlerRootView, ForceTouchGesture, ForceTouchGestureHandler } from 'react-native-gesture-handler';
 
 type SwipeableItemProps = {
   children: ReactNode;
@@ -21,25 +21,20 @@ const SwipeableItem: React.FC<SwipeableItemProps> = ({ children, onSwipeLeft, on
   };
   const handleOnDrag = () => {
     setActionState('dragging');
-
   };
 
   const renderRightActions = () => {
     let backgroundColor: string;
     let text: string;
-
     switch (actionState) {
-
       case 'dragging':
         backgroundColor = 'red';
         text = 'deleted';
         break;
-
       default:
         backgroundColor = 'orange';
         text = 'borrando';
     }
-
     return (
       <View style={{ width: '100%', backgroundColor, justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{ color: 'white' }}>{text}</Text>
@@ -48,8 +43,6 @@ const SwipeableItem: React.FC<SwipeableItemProps> = ({ children, onSwipeLeft, on
   };
 
   const renderLeftActions = () => {
-
-
     return (
       <View style={{ width: '100%', backgroundColor: 'yellow', justifyContent: 'center', alignItems: 'center' }}>
         <Text style={{ color: 'white' }}>favorites</Text>

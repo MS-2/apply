@@ -16,13 +16,7 @@ import { setupDatabase } from "@/data/setupDatabase";
 // SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      gcTime: 1000 * 60 * 60 * 24, // 24 hours
-      staleTime: 2000,
-      retry: 2,
-    },
-  },
+
   // configure global cache callbacks to show toast notifications
   mutationCache: new MutationCache({
     onSuccess: (data) => {

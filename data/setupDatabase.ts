@@ -1,5 +1,4 @@
 import * as SQLite from "expo-sqlite";
-import { SQLiteProvider } from "expo-sqlite";
 
 export const setupDatabase = async () => {
   const db = await SQLite.openDatabaseAsync("test.db");

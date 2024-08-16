@@ -33,7 +33,7 @@ export const RenderList: React.FC<RenderListProps> = ({
                         <Text style={styles.title}>
                             {story_title ?? "N/A"}
                         </Text>
-                        <Text style={styles.subtitle}>{`${author} - ${date}`}</Text>
+                        <Text style={styles.subtitle}>Author : {`${author} - ${date}`}</Text>
                     </TouchableOpacity>
                 </Link>
             </View>
@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
     subtitle: {
         fontSize: 14,
         color: '#555',
+        textDecorationLine: 'underline'
     },
 });
 

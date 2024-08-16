@@ -62,6 +62,24 @@ export const removeHitFromFavorites = async (objectID: string) => {
   }
 };
 
+export const removeHitFromDeleted = async (objectID: string) => {
+  const db = await SQLite.openDatabaseAsync("test.db");
+  try {
+    const result = await db.runAsync(
+      `DELETE FROM deleted WHERE objectID = ?`,
+      objectID
+    );
+
+    if (result.changes > 0) {
+      console.log(`Item with objectID: ${objectID} deleted`);
+    } else {
+      console.log(`No item with objectID: ${objectID} deleted`);
+    }
+  } catch (error) {
+    console.error("Error removing item from deleted:", error);
+  }
+};
+
 export const removeHitFromFeed = async (objectID: string) => {
   const db = await SQLite.openDatabaseAsync("test.db");
   try {
