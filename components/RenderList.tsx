@@ -4,11 +4,14 @@ import { Text } from 'react-native-paper';
 import { Link } from "expo-router";
 import SwipeableItem from "@/components/SwipeableItem";
 import { Hit } from "@/types/algoliaResponse";
+import * as Animatable from 'react-native-animatable';
 
 // Define the type for the component props
 type RenderListProps = Hit & {
     onSwipeRight?: (objectID: string) => Promise<void>;
     onSwipeLeft?: (objectID: string) => Promise<void>;
+    index: number
+    animation?: string
 };
 
 export const RenderList: React.FC<RenderListProps> = ({
@@ -19,24 +22,29 @@ export const RenderList: React.FC<RenderListProps> = ({
     story_url,
     onSwipeRight,
     onSwipeLeft,
+    index,
+    animation
 }) => {
+    // console.log(animation)
     const date = new Date(created_at).toLocaleDateString();
     return (
-        <SwipeableItem
-            onSwipeLeft={() => onSwipeLeft?.(objectID)}
-            onSwipeRight={() => onSwipeRight?.(objectID)}
-        >
-            <View style={styles.container}>
-                <Link href={{ pathname: "/screens/webview", params: { value: story_url } }} asChild>
-                    <TouchableOpacity style={styles.touchable}>
-                        <Text style={styles.title}>
-                            {story_title ?? "N/A"}
-                        </Text>
-                        <Text style={styles.subtitle}>Author : {`${author} - ${date}`}</Text>
-                    </TouchableOpacity>
-                </Link>
-            </View>
-        </SwipeableItem>
+        <Animatable.View animation="flipInX" duration={1000} delay={index * 300} >
+            <SwipeableItem
+                onSwipeLeft={() => onSwipeLeft?.(objectID)}
+                onSwipeRight={() => onSwipeRight?.(objectID)}
+            >
+                <View style={styles.container}>
+                    <Link href={{ pathname: "/screens/webview", params: { value: story_url } }} asChild>
+                        <TouchableOpacity style={styles.touchable}>
+                            <Text style={styles.title}>
+                                {story_title ?? "N/A"}
+                            </Text>
+                            <Text style={styles.subtitle}>Author : {`${author} - ${date}`}</Text>
+                        </TouchableOpacity>
+                    </Link>
+                </View>
+            </SwipeableItem>
+        </Animatable.View>
     );
 };
 

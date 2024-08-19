@@ -1,6 +1,12 @@
 import { Hit } from "@/types/algoliaResponse";
 import * as SQLite from "expo-sqlite";
 
+export const getHits = async () => {
+  const db = await SQLite.openDatabaseAsync("test.db");
+  const hits = await db.getAllAsync<Hit>("SELECT * from hits");
+  return hits;
+};
+
 export const addHitToFavorites = async (objectID: string) => {
   const db = await SQLite.openDatabaseAsync("test.db");
   try {

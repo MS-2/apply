@@ -13,6 +13,7 @@ import { Text } from 'react-native'
 import * as SplashScreen from 'expo-splash-screen';
 import * as Notifications from "expo-notifications";
 import { DragStateProvider } from '@/hooks/dragStateContext';
+import { UserPreferencesProvider } from '@/providers/UserPreferences';
 // SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient({
@@ -80,7 +81,9 @@ export default function AppProviders({ children }: AppProvidersProps) {
                 <SQLiteProvider databaseName="test.db">
                     <NotificationProvider>
                         <DragStateProvider>
-                            {children}
+                            <UserPreferencesProvider>
+                                {children}
+                            </UserPreferencesProvider>
                         </DragStateProvider>
                     </NotificationProvider>
                 </SQLiteProvider>

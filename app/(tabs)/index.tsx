@@ -51,7 +51,7 @@ export default function Home() {
         contentInsetAdjustmentBehavior="automatic"
         data={dataSource}
         keyExtractor={({ objectID }) => objectID}
-        renderItem={({ item }) => <RenderList  {...item} onSwipeRight={addHitToFavorites} onSwipeLeft={removeHitFromFeed} />}
+        renderItem={({ item, index }) => <RenderList index={index} {...item} onSwipeRight={addHitToFavorites} onSwipeLeft={removeHitFromFeed} />}
         getItemLayout={(_data, index) => (
           { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
         )}
