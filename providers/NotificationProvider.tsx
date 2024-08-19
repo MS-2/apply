@@ -41,7 +41,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({
 
   return (
     <NotificationContext.Provider
-      value={{ expoPushToken, channels, notification }}
+      value={{ expoPushToken, channels, notification, setNotification }}
     >
       {children}
     </NotificationContext.Provider>

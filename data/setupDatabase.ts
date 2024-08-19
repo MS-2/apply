@@ -50,4 +50,18 @@ export const setupDatabase = async () => {
     updated_at TEXT
   );
   `);
+
+  await db.execAsync(`
+  PRAGMA journal_mode = WAL;
+  CREATE TABLE IF NOT EXISTS deletedHits (
+    objectID TEXT PRIMARY KEY NOT NULL
+  );
+  `);
+
+  await db.execAsync(`
+  PRAGMA journal_mode = WAL;
+  CREATE TABLE IF NOT EXISTS favoriteHits (
+    objectID TEXT PRIMARY KEY NOT NULL
+  );
+  `);
 };

@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { AlgoliaResponse, Hit } from "@/types/algoliaResponse";
 import { useSQLiteContext } from "expo-sqlite";
-import { saveHitsToFeed, getHits } from "@/data/Tasks";
+import { saveHitsToFeed, getHits, getDeletedHits } from "@/data/Tasks";
 import * as Notifications from 'expo-notifications';
 import { useUserPreferencesContext } from "@/providers/UserPreferences";
-
 
 const fetchAlgoliaData = async (): Promise<AlgoliaResponse> => {
     const response = await fetch("https://hn.algolia.com/api/v1/search_by_date?query=mobile");
@@ -21,19 +20,21 @@ const fetchAlgoliaData = async (): Promise<AlgoliaResponse> => {
 export const useHackerQuery = () => {
     const db = useSQLiteContext();
     const { selectedPreferences } = useUserPreferencesContext();
-    return useQuery<AlgoliaResponse>({
+    return useQuery<Hit[]>({
         queryKey: ["hackernews"],
         queryFn: async () => {
             const response = await fetchAlgoliaData();
-            const existingHits = await getHits();
-            const newHits = response.hits.filter(hit => !existingHits.some(existing => existing.objectID === hit.objectID));
+            const deletedHits = await db.getAllAsync<Hit>('SELECT * FROM deletedHits');
+            const favoriteHits = await db.getAllAsync<Hit>('SELECT * FROM favoriteHits');
+            const filteredHits = response.hits.filter(hit =>
+                !deletedHits.some(deletedHit => deletedHit.objectID === hit.objectID) &&
+                !favoriteHits.some(favoriteHit => favoriteHit.objectID === hit.objectID)
 
-            // filter new articles that match preferences
-            const filteredHits = newHits.filter(hit =>
-                selectedPreferences.some(term => hit.story_title.toLowerCase().includes(term.toLowerCase()))
             );
-
-            if (filteredHits.length > 0) {
+            const preferencesHit = response.hits.filter(hit =>
+                selectedPreferences.some(term => hit.story_title?.toLowerCase().includes(term.toLowerCase()))
+            );
+            if (preferencesHit.length > 0) {
                 // send push notification when somenthing match
                 await Notifications.scheduleNotificationAsync({
                     content: {
@@ -43,13 +44,44 @@ export const useHackerQuery = () => {
                     trigger: null
                 });
             }
-
-            await saveHitsToFeed(db, response.hits);
-            return response;
+            return filteredHits
         },
         staleTime: 1000 * 60 * 5, // 5 minutos
-        retry: 2, // Reintenta la consulta 3 veces en caso de fallo
-        refetchOnWindowFocus: true, // Refetch cuando la ventana gana el foco
-        refetchInterval: 1000 * 60 * 10, // Refetch cada 10 minutos
+        retry: 2,
+        refetchOnWindowFocus: true, // Refetch onFocus
+        refetchInterval: 1000 * 60 * 10, // Refetch every  10 min
+    });
+};
+
+
+export const useDeletedQuery = () => {
+    const db = useSQLiteContext();
+    return useQuery<Hit[]>({
+        queryKey: ["DELETED"],
+        queryFn: async () => {
+            const response = await fetchAlgoliaData();
+            const deletedHits = await db.getAllAsync<Hit>('SELECT * FROM deletedHits');
+            const filteredHits = response.hits.filter(hit =>
+                deletedHits.some(deletedHit => deletedHit.objectID === hit.objectID)
+            );
+            return filteredHits
+        },
+        refetchOnWindowFocus: true
+    });
+};
+
+export const useFavoritesQuery = () => {
+    const db = useSQLiteContext();
+    return useQuery<Hit[]>({
+        queryKey: ["FAVORITES"],
+        queryFn: async () => {
+            const response = await fetchAlgoliaData();
+            const favoritesHits = await db.getAllAsync<Hit>('SELECT * FROM favoriteHits');
+            const filteredHits = response.hits.filter(hit =>
+                favoritesHits.some(favoriteHit => favoriteHit.objectID === hit.objectID)
+            );
+            return filteredHits
+        },
+        refetchOnWindowFocus: true
     });
 };

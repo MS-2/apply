@@ -39,17 +39,19 @@ const SwipeableItem: React.FC<SwipeableItemProps> = ({ children, onSwipeLeft, on
         text = 'borrando';
     }
     return (
-      <View style={{ width: '100%', backgroundColor, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ color: 'white' }}>{text}</Text>
-      </View>
+      // <View style={{ width: '100%', backgroundColor, justifyContent: 'center', alignItems: 'center' }}>
+      //   <Text style={{ color: 'white' }}>{text}</Text>
+      // </View>
+      <View style={{ width: '100%', }}></View>
     );
   };
 
   const renderLeftActions = () => {
     return (
-      <View style={{ width: '100%', backgroundColor: 'yellow', justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ color: 'white' }}>favorites</Text>
-      </View>
+      // <View style={{ width: '100%', backgroundColor: 'yellow', justifyContent: 'center', alignItems: 'center' }}>
+      //   <Text style={{ color: 'white' }}>favorites</Text>
+      // </View>
+      <View style={{ width: '100%', }}></View>
     );
   };
 

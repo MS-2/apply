@@ -1,43 +1,42 @@
 import React, { useCallback, useState, useEffect } from "react";
-import { FlatList, ActivityIndicator, SafeAreaView, Text, RefreshControl, Touchable, TouchableHighlight, TouchableOpacity } from "react-native";
+import { FlatList, Text, RefreshControl } from "react-native";
 import { useHackerQuery } from "@/hooks/useHackerNewsQuery";
 import { Hit } from "@/types/algoliaResponse";
 import { useSQLiteContext } from "expo-sqlite";
 import { RenderList } from '../../components/RenderList';
 import { ITEM_HEIGHT } from "@/constants";
-import { removeHitFromFeed, addHitToFavorites } from "@/data/Tasks";
+import { removeHitFromFeed, addHitToFavorites, saveHitsToFeed, getDeletedHits, getHits, removeHitFromFeedSimple, addHitToFavoritesFromFeedSimple } from "@/data/Tasks";
 import { onlineManager } from "@tanstack/react-query";
 import ScreenWrapper from "@/components/ScreensWrapper";
 import { useDragState } from "@/hooks/dragStateContext";
+import { useFocusEffect } from "expo-router";
+import { ActivityIndicator } from "react-native-paper";
 export default function Home() {
   const db = useSQLiteContext();
-  const { isLoading, error, data, refetch } = useHackerQuery();
+  const { isLoading, error, data, refetch, isFetching } = useHackerQuery();
 
-
-  const [feed, setFeed] = useState<Hit[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
   const { isDragging } = useDragState();
 
-  // Fetch local hits on focus
-  useEffect(() => {
-    const fetchHits = async () => {
-      const hits = await db.getAllAsync<Hit>('SELECT * from hits');
-      setFeed(hits);
-    };
-    fetchHits();
-  }, [db]);
+  useFocusEffect(
+    useCallback(() => {
+      refetch()
+    }, [data, db])
+  );
 
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-    await refetch();
-    setRefreshing(false);
-  }, [refetch]);
+  const removeHit = useCallback(async (objectID: string) => {
+    await removeHitFromFeedSimple(objectID);
+    refetch()
+  }, []);
 
-  // Determine which data source to use
-  const dataSource = onlineManager.isOnline() ? data?.hits : feed;
+  const favoriteHit = useCallback(async (objectID: string) => {
+    await addHitToFavoritesFromFeedSimple(objectID);
+    refetch()
+  }, []);
+
+
 
   if (isLoading) {
-    return <ScreenWrapper><ActivityIndicator size="large" color="#0000ff" /></ScreenWrapper>;
+    return <ScreenWrapper><ActivityIndicator size="large" color="#FFF" /></ScreenWrapper>;
   }
 
   if (error && !onlineManager.isOnline()) {
@@ -49,9 +48,9 @@ export default function Home() {
       <FlatList
         scrollEnabled={true}
         contentInsetAdjustmentBehavior="automatic"
-        data={dataSource}
+        data={data}
         keyExtractor={({ objectID }) => objectID}
-        renderItem={({ item, index }) => <RenderList index={index} {...item} onSwipeRight={addHitToFavorites} onSwipeLeft={removeHitFromFeed} />}
+        renderItem={({ item, index }) => <RenderList index={index} {...item} onSwipeRight={favoriteHit} onSwipeLeft={removeHit} />}
         getItemLayout={(_data, index) => (
           { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
         )}
@@ -59,8 +58,8 @@ export default function Home() {
         windowSize={10}
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
+            refreshing={isFetching}
+            onRefresh={refetch}
           />
         }
       />

@@ -1,36 +1,42 @@
 import React, { useState, useCallback } from "react";
-import { FlatList, StyleSheet } from "react-native";
-import { useHeaderHeight } from "@react-navigation/elements";
+import { FlatList, RefreshControl, StyleSheet, Text } from "react-native";
 import RenderList from "@/components/RenderList";
 import { ITEM_HEIGHT } from "@/constants";
 import { Hit } from "@/types/algoliaResponse";
 import { useSQLiteContext } from "expo-sqlite";
 import { useFocusEffect } from "expo-router";
-import { removeHitFromDeleted } from "@/data/Tasks";
+import { removeHitFromDeleted, removeDeletedSimple } from "@/data/Tasks";
 import ScreenWrapper from "@/components/ScreensWrapper";
+import { useDeletedQuery, useHackerQuery } from "@/hooks/useHackerNewsQuery";
+import { ActivityIndicator } from "react-native-paper";
+import { onlineManager } from "@tanstack/react-query";
 
 const DeletedItemsScreen: React.FC = () => {
   const db = useSQLiteContext();
-  const [deletedHits, setDeletedHits] = useState<Hit[]>([]);
+
+  const { isLoading, error, data, refetch, isFetching } = useDeletedQuery();
+
 
   useFocusEffect(
     useCallback(() => {
-      const fetchDeletedHits = async () => {
-        const hits = await db.getAllAsync<Hit>('SELECT * FROM deleted');
-        setDeletedHits(hits);
-      };
-
-      fetchDeletedHits();
-    }, [db])
+      refetch()
+    }, [data, db])
   );
+  if (isLoading) {
+    return <ScreenWrapper><ActivityIndicator size="large" color="#FFF" /></ScreenWrapper>;
+  }
 
+  if (error && !onlineManager.isOnline()) {
+    return (<ScreenWrapper><></></ScreenWrapper >)
+  }
   return (
     <ScreenWrapper>
       <FlatList
+        scrollEnabled={true}
         contentInsetAdjustmentBehavior="automatic"
-        data={deletedHits}
+        data={data}
         keyExtractor={({ objectID }) => objectID}
-        renderItem={({ item }) => <RenderList {...item} onSwipeRight={removeHitFromDeleted} />}
+        renderItem={({ item, index }) => <RenderList index={index} {...item} onSwipeRight={removeDeletedSimple} />}
         getItemLayout={(_data, index) => ({
           length: ITEM_HEIGHT,
           offset: ITEM_HEIGHT * index,
@@ -38,13 +44,16 @@ const DeletedItemsScreen: React.FC = () => {
         })}
         initialNumToRender={20}
         windowSize={10}
+        refreshControl={
+          <RefreshControl
+            refreshing={isFetching}
+            onRefresh={refetch}
+          />
+        }
       />
     </ScreenWrapper>
   );
 };
 
-const styles = StyleSheet.create({
-  // Add any styles if needed
-});
 
 export default DeletedItemsScreen;
