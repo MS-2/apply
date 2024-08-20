@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TouchableOpacity, View, StyleSheet } from "react-native";
 import { Text } from 'react-native-paper';
 import { Link } from "expo-router";
-import SwipeableItem from "@/components/SwipeableItem";
+import { SwipeableItem } from "@/components/SwipeableItem";
 import { Hit } from "@/types/algoliaResponse";
 import * as Animatable from 'react-native-animatable';
 

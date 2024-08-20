@@ -57,7 +57,7 @@ const MainScreen: React.FC = () => {
         initialNumToRender={INITIAL_NUM_TO_RENDER}
         windowSize={WINDOW_SIZE}
         refreshControl={
-          <RefreshControl refreshing={isFetching} onRefresh={refetch} />
+          <RefreshControl refreshing={isLoading} onRefresh={refetch} />
         }
       />
     </ScreenWrapper>

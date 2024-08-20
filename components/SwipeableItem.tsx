@@ -1,7 +1,7 @@
 import { useDragState } from '@/hooks/dragStateContext';
 import React, { ReactNode, useState, useRef } from 'react';
-import { Text, TouchableOpacity, StyleSheet, View } from 'react-native';
-import { Swipeable, GestureHandlerRootView, ForceTouchGesture, ForceTouchGestureHandler } from 'react-native-gesture-handler';
+import { Text, StyleSheet, View } from 'react-native';
+import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
 
 type SwipeableItemProps = {
   children: ReactNode;
@@ -9,7 +9,7 @@ type SwipeableItemProps = {
   onSwipeRight: () => void;
 }
 
-const SwipeableItem: React.FC<SwipeableItemProps> = ({ children, onSwipeLeft, onSwipeRight }) => {
+export const SwipeableItem: React.FC<SwipeableItemProps> = ({ children, onSwipeLeft, onSwipeRight }) => {
   const [actionState, setActionState] = useState<'idle' | 'dragging'>('idle');
   const { setDragging } = useDragState();
   const handleSwipeableOpen = (direction: 'left' | 'right') => {
@@ -71,4 +71,3 @@ const SwipeableItem: React.FC<SwipeableItemProps> = ({ children, onSwipeLeft, on
   );
 };
 
-export default SwipeableItem;

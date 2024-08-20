@@ -6,9 +6,9 @@ import { ArticleList } from "../../components/RenderList";
 import { ITEM_HEIGHT, INITIAL_NUM_TO_RENDER, WINDOW_SIZE } from "@/constants";
 import { removeFromFavorite } from "@/data/favorites";
 import { ScreenWrapper } from "@/components/ScreensWrapper";
-import { useFavoritesQuery } from "@/hooks/useHackerNewsQuery";
 import { onlineManager } from "@tanstack/react-query";
 import { ConnectionBanner } from "@/components/ConnectionBanner";
+import { useFavoritesQuery } from "@/hooks/useFavoritesQuery";
 
 const FavoritesScreen: React.FC = () => {
   const { data, error, refetch, isLoading, isFetching } = useFavoritesQuery();
@@ -18,6 +18,12 @@ const FavoritesScreen: React.FC = () => {
       refetch();
     }, [refetch])
   );
+
+  const removeFavorite = useCallback(async (objectID: string) => {
+    await removeFromFavorite(objectID);
+    refetch()
+  }, []);
+
 
   return (
     <ScreenWrapper>
@@ -31,7 +37,7 @@ const FavoritesScreen: React.FC = () => {
         data={data}
         keyExtractor={({ objectID }) => objectID}
         renderItem={({ item, index }) => (
-          <ArticleList index={index} {...item} onSwipeLeft={removeFromFavorite} />
+          <ArticleList index={index} {...item} onSwipeLeft={removeFavorite} />
         )}
         getItemLayout={(_data, index) => ({
           length: ITEM_HEIGHT,
@@ -41,7 +47,7 @@ const FavoritesScreen: React.FC = () => {
         initialNumToRender={INITIAL_NUM_TO_RENDER}
         windowSize={WINDOW_SIZE}
         refreshControl={
-          <RefreshControl refreshing={isFetching} onRefresh={refetch} />
+          <RefreshControl refreshing={isLoading} onRefresh={refetch} />
         }
       />
     </ScreenWrapper>

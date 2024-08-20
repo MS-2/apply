@@ -1,15 +1,14 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import { FlatList, RefreshControl } from "react-native";
 import { ArticleList } from "@/components/RenderList";
 import { INITIAL_NUM_TO_RENDER, ITEM_HEIGHT, WINDOW_SIZE } from "@/constants";
 import { useFocusEffect } from "expo-router";
 import { removeFromDeleted } from "@/data/deleted";
 import { ScreenWrapper } from "@/components/ScreensWrapper";
-import { useDeletedQuery } from "@/hooks/useHackerNewsQuery";
 import { ActivityIndicator } from "react-native-paper";
 import { onlineManager } from "@tanstack/react-query";
 import { ConnectionBanner } from "@/components/ConnectionBanner";
-
+import { useDeletedQuery } from "@/hooks/useDeletedQuery";
 const DeletedScreen: React.FC = () => {
   const { isLoading, error, data, refetch, isFetching } = useDeletedQuery();
 
@@ -18,6 +17,11 @@ const DeletedScreen: React.FC = () => {
       refetch()
     }, [refetch])
   );
+
+  const removeDeleted = useCallback(async (objectID: string) => {
+    await removeFromDeleted(objectID);
+    refetch()
+  }, []);
 
   return (
     <ScreenWrapper>
@@ -30,7 +34,7 @@ const DeletedScreen: React.FC = () => {
         contentInsetAdjustmentBehavior="automatic"
         data={data}
         keyExtractor={({ objectID }) => objectID}
-        renderItem={({ item, index }) => <ArticleList index={index} {...item} onSwipeRight={removeFromDeleted} />}
+        renderItem={({ item, index }) => <ArticleList index={index} {...item} onSwipeRight={removeDeleted} />}
         getItemLayout={(_data, index) => ({
           length: ITEM_HEIGHT,
           offset: ITEM_HEIGHT * index,
@@ -39,7 +43,7 @@ const DeletedScreen: React.FC = () => {
         initialNumToRender={INITIAL_NUM_TO_RENDER}
         windowSize={WINDOW_SIZE}
         refreshControl={
-          <RefreshControl refreshing={isFetching} onRefresh={refetch} />
+          <RefreshControl refreshing={isLoading} onRefresh={refetch} />
         }
       />
     </ScreenWrapper>

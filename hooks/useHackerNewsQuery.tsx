@@ -47,40 +47,40 @@ export const useHackerQuery = () => {
         },
         staleTime: 1000 * 60 * 5, // 5 minutos
         retry: 2,
-        refetchOnWindowFocus: true, // Refetch onFocus
+        refetchOnWindowFocus: false, // Refetch onFocus
         refetchInterval: 1000 * 60 * 10, // Refetch every  10 min
     });
 };
 
 
-export const useDeletedQuery = () => {
-    const db = useSQLiteContext();
-    return useQuery<Hit[]>({
-        queryKey: ["DELETED"],
-        queryFn: async () => {
-            const response = await fetchAlgoliaData();
-            const deletedHits = await db.getAllAsync<Hit>('SELECT * FROM deletedHits');
-            const filteredHits = response.hits.filter(hit =>
-                deletedHits.some(deletedHit => deletedHit.objectID === hit.objectID)
-            );
-            return filteredHits
-        },
-        refetchOnWindowFocus: true
-    });
-};
+// export const useDeletedQuery = () => {
+//     const db = useSQLiteContext();
+//     return useQuery<Hit[]>({
+//         queryKey: ["DELETED"],
+//         queryFn: async () => {
+//             const response = await fetchAlgoliaData();
+//             const deletedHits = await db.getAllAsync<Hit>('SELECT * FROM deletedHits');
+//             const filteredHits = response.hits.filter(hit =>
+//                 deletedHits.some(deletedHit => deletedHit.objectID === hit.objectID)
+//             );
+//             return filteredHits
+//         },
+//         refetchOnWindowFocus: false
+//     });
+// };
 
-export const useFavoritesQuery = () => {
-    const db = useSQLiteContext();
-    return useQuery<Hit[]>({
-        queryKey: ["FAVORITES"],
-        queryFn: async () => {
-            const response = await fetchAlgoliaData();
-            const favoritesHits = await db.getAllAsync<Hit>('SELECT * FROM favoriteHits');
-            const filteredHits = response.hits.filter(hit =>
-                favoritesHits.some(favoriteHit => favoriteHit.objectID === hit.objectID)
-            );
-            return filteredHits
-        },
-        refetchOnWindowFocus: true
-    });
-};
+// export const useFavoritesQuery = () => {
+//     const db = useSQLiteContext();
+//     return useQuery<Hit[]>({
+//         queryKey: ["FAVORITES"],
+//         queryFn: async () => {
+//             const response = await fetchAlgoliaData();
+//             const favoritesHits = await db.getAllAsync<Hit>('SELECT * FROM favoriteHits');
+//             const filteredHits = response.hits.filter(hit =>
+//                 favoritesHits.some(favoriteHit => favoriteHit.objectID === hit.objectID)
+//             );
+//             return filteredHits
+//         },
+//         refetchOnWindowFocus: false
+//     });
+// };
