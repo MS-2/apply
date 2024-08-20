@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { FlatList, RefreshControl } from "react-native";
-import { useHackerQuery } from "@/hooks/useHackerNewsQuery";
+import { useMainQuery } from "@/hooks/useMainQuery";
 import { ArticleList } from '../../src/components/RenderList';
 import { INITIAL_NUM_TO_RENDER, ITEM_HEIGHT, WINDOW_SIZE } from "@/constants";
 import { hitToFavorites, hitToDeleted } from "@/data/main";
@@ -13,7 +13,7 @@ import { ConnectionBanner } from "@/components/ConnectionBanner";
 
 const MainScreen: React.FC = () => {
 
-  const { isLoading, error, data, refetch, isFetching } = useHackerQuery();
+  const { isLoading, error, data, refetch, isFetching } = useMainQuery();
 
   const { isDragging } = useDragState();
 

@@ -1,6 +1,9 @@
-export const ITEM_HEIGHT = 80; // Ajusta esto según la altura de tus elementos
+export const ITEM_HEIGHT = 80; // height per article
 export const INITIAL_NUM_TO_RENDER = 20;
 export const WINDOW_SIZE = 10;
+export const STALE_TIME = 1000 * 60 * 5; // 5 minutos
+export const RETRY = 2;
+export const REFETCH_INTERVAL = 1000 * 60 * 10; // Refetch every  10 min
 export const searchTerms = [
   "AI",
   "machine learning",

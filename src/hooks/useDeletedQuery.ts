@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Hit } from "@/types/algoliaResponse";
 import { fetchAlgoliaData } from "@/api";
 import { getDeletedHits } from "@/data/deleted";
+import { STALE_TIME, RETRY, REFETCH_INTERVAL } from "@/constants";
 
 export const useDeletedQuery = () => {
   return useQuery<Hit[]>({
@@ -19,7 +20,8 @@ export const useDeletedQuery = () => {
         return []; // Devolver un array vacío en caso de error
       }
     },
-    refetchOnWindowFocus: false,
-    staleTime: 300000, // Agregado tiempo de "stale" de 5 minutos para evitar refetch innecesario
+    staleTime: STALE_TIME,
+    retry: RETRY,
+    refetchInterval: REFETCH_INTERVAL,
   });
 };
