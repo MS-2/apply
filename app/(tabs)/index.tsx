@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { FlatList, RefreshControl } from "react-native";
 import { useMainQuery } from "@/hooks/useMainQuery";
 import { ArticleList } from '../../src/components/RenderList';
@@ -6,7 +6,6 @@ import { INITIAL_NUM_TO_RENDER, ITEM_HEIGHT, WINDOW_SIZE } from "@/constants";
 import { hitToFavorites, hitToDeleted } from "@/data/main";
 import { onlineManager } from "@tanstack/react-query";
 import { ScreenWrapper } from "@/components/ScreensWrapper";
-import { useDragState } from "@/hooks/dragStateContext";
 import { useFocusEffect } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
 import { ConnectionBanner } from "@/components/ConnectionBanner";
@@ -14,8 +13,6 @@ import { ConnectionBanner } from "@/components/ConnectionBanner";
 const MainScreen: React.FC = () => {
 
   const { isLoading, error, data, refetch, isFetching } = useMainQuery();
-
-  const { isDragging } = useDragState();
 
   useFocusEffect(
     useCallback(() => {
@@ -43,7 +40,7 @@ const MainScreen: React.FC = () => {
       )}
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
-        scrollEnabled={false}
+        scrollEnabled={true}
         data={data}
         keyExtractor={({ objectID }) => objectID}
         renderItem={({ item, index }) => (

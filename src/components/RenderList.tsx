@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { TouchableOpacity, View, StyleSheet } from "react-native";
 import { Text } from 'react-native-paper';
 import { Link } from "expo-router";
@@ -27,8 +27,9 @@ export const ArticleList: React.FC<RenderListProps> = ({
     return (
         <Animatable.View animation="flipInX" duration={1000} delay={index * 300} >
             <SwipeableItem
-                onSwipeLeft={() => onSwipeLeft?.(objectID)}
-                onSwipeRight={() => onSwipeRight?.(objectID)}
+                onSwipeLeft={onSwipeLeft}
+                onSwipeRight={onSwipeRight}
+                objectID={objectID}
             >
                 <View style={styles.container}>
                     <Link href={{ pathname: "/screens/webview", params: { value: story_url } }} asChild>

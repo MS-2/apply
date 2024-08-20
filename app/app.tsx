@@ -12,7 +12,6 @@ import { setupDatabase } from '@/data/setupDatabase';
 import { Text } from 'react-native'
 import * as SplashScreen from 'expo-splash-screen';
 import * as Notifications from "expo-notifications";
-import { DragStateProvider } from '@/hooks/dragStateContext';
 import { UserPreferencesProvider } from '@/providers/UserPreferences';
 // SplashScreen.preventAutoHideAsync();
 
@@ -80,11 +79,9 @@ export default function AppProviders({ children }: AppProvidersProps) {
             <Suspense fallback={<Text>Loading...</Text>}>
                 <SQLiteProvider databaseName="test.db">
                     <NotificationProvider>
-                        <DragStateProvider>
-                            <UserPreferencesProvider>
-                                {children}
-                            </UserPreferencesProvider>
-                        </DragStateProvider>
+                        <UserPreferencesProvider>
+                            {children}
+                        </UserPreferencesProvider>
                     </NotificationProvider>
                 </SQLiteProvider>
             </Suspense>

@@ -1,69 +1,32 @@
-import { useDragState } from '@/hooks/dragStateContext';
-import React, { ReactNode, useState, useRef } from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import React, { ReactNode, useState } from 'react';
 import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SwipeAction } from './SwipeAction';
 
 type SwipeableItemProps = {
   children: ReactNode;
-  onSwipeLeft: () => void;
-  onSwipeRight: () => void;
+  onSwipeRight?: (objectID: string) => Promise<void>;
+  onSwipeLeft?: (objectID: string) => Promise<void>;
+  objectID: string
 }
 
-export const SwipeableItem: React.FC<SwipeableItemProps> = ({ children, onSwipeLeft, onSwipeRight }) => {
-  const [actionState, setActionState] = useState<'idle' | 'dragging'>('idle');
-  const { setDragging } = useDragState();
+export const SwipeableItem: React.FC<SwipeableItemProps> = ({ children, onSwipeLeft, onSwipeRight, objectID }) => {
+  const [isSwipeOut, setIsSwipeOut] = useState(false);
   const handleSwipeableOpen = (direction: 'left' | 'right') => {
-    setActionState('idle');
-    setDragging(false);
-    if (direction === 'left') {
-      onSwipeRight();
-    } else if (direction === 'right') {
-      onSwipeLeft();
-    }
-  };
-  const handleOnDrag = () => {
-    setDragging(false);
-    setActionState('dragging');
-  };
-
-  const renderRightActions = () => {
-    let backgroundColor: string;
-    let text: string;
-    switch (actionState) {
-      case 'dragging':
-        backgroundColor = 'red';
-        text = 'deleted';
-        break;
-      default:
-        backgroundColor = 'orange';
-        text = 'borrando';
-    }
-    return (
-      // <View style={{ width: '100%', backgroundColor, justifyContent: 'center', alignItems: 'center' }}>
-      //   <Text style={{ color: 'white' }}>{text}</Text>
-      // </View>
-      <View style={{ width: '100%', }}></View>
-    );
-  };
-
-  const renderLeftActions = () => {
-    return (
-      // <View style={{ width: '100%', backgroundColor: 'yellow', justifyContent: 'center', alignItems: 'center' }}>
-      //   <Text style={{ color: 'white' }}>favorites</Text>
-      // </View>
-      <View style={{ width: '100%', }}></View>
-    );
+    setIsSwipeOut(true);
+    const action = direction === 'left' ? onSwipeRight : onSwipeLeft;
+    if (action) action(objectID);
   };
 
   return (
     <GestureHandlerRootView>
       <Swipeable
-        renderRightActions={renderRightActions}
-        renderLeftActions={renderLeftActions}
-        onSwipeableWillOpen={handleOnDrag}
+        renderRightActions={onSwipeLeft && (() => <SwipeAction color='#a81212b4' isSwipeOut={isSwipeOut} />)}
+        renderLeftActions={onSwipeRight && (() => <SwipeAction color='#bfff0094' isSwipeOut={isSwipeOut} />)}
         onSwipeableOpen={handleSwipeableOpen}
         overshootRight={false}
         overshootLeft={false}
+        friction={0.1}  // soft swipe
+        overshootFriction={0.1}  // reduce bounce resist
       >
         {children}
       </Swipeable>
