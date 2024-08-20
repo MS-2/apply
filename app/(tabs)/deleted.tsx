@@ -1,26 +1,22 @@
 import React, { useState, useCallback } from "react";
 import { FlatList, RefreshControl } from "react-native";
-import RenderList from "@/components/RenderList";
+import { ArticleList } from "@/components/RenderList";
 import { INITIAL_NUM_TO_RENDER, ITEM_HEIGHT, WINDOW_SIZE } from "@/constants";
-import { useSQLiteContext } from "expo-sqlite";
 import { useFocusEffect } from "expo-router";
-import { removeDeletedSimple } from "@/data/Tasks";
-import ScreenWrapper from "@/components/ScreensWrapper";
+import { removeFromDeleted } from "@/data/deleted";
+import { ScreenWrapper } from "@/components/ScreensWrapper";
 import { useDeletedQuery } from "@/hooks/useHackerNewsQuery";
 import { ActivityIndicator } from "react-native-paper";
 import { onlineManager } from "@tanstack/react-query";
 import { ConnectionBanner } from "@/components/ConnectionBanner";
 
-const DeletedItemsScreen: React.FC = () => {
-  const db = useSQLiteContext();
-
+const DeletedScreen: React.FC = () => {
   const { isLoading, error, data, refetch, isFetching } = useDeletedQuery();
-
 
   useFocusEffect(
     useCallback(() => {
       refetch()
-    }, [data, db])
+    }, [refetch])
   );
 
   return (
@@ -34,7 +30,7 @@ const DeletedItemsScreen: React.FC = () => {
         contentInsetAdjustmentBehavior="automatic"
         data={data}
         keyExtractor={({ objectID }) => objectID}
-        renderItem={({ item, index }) => <RenderList index={index} {...item} onSwipeRight={removeDeletedSimple} />}
+        renderItem={({ item, index }) => <ArticleList index={index} {...item} onSwipeRight={removeFromDeleted} />}
         getItemLayout={(_data, index) => ({
           length: ITEM_HEIGHT,
           offset: ITEM_HEIGHT * index,
@@ -51,4 +47,4 @@ const DeletedItemsScreen: React.FC = () => {
 };
 
 
-export default DeletedItemsScreen;
+export default DeletedScreen;

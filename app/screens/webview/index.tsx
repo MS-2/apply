@@ -3,7 +3,7 @@ import { WebView } from 'react-native-webview';
 import { useLocalSearchParams } from 'expo-router';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { HighlightResult } from "@/types/algoliaResponse";
-import ScreenWrapper from "@/components/ScreensWrapper";
+import { ScreenWrapper } from "@/components/ScreensWrapper";
 const WebViewScreen = () => {
     const { value } = useLocalSearchParams<HighlightResult>();
 

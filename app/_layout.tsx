@@ -34,7 +34,7 @@ const RootLayout: React.FC = () => (
             />
             <Stack.Screen
                 name="screens/settings/index"
-                options={{ ...optionsHeaderIos, title: 'Settings', headerRight: () => null }}
+                options={{ ...optionsHeaderIos, headerTitle: 'Settings', headerRight: () => null }}
             />
         </Stack>
     </AppProviders>

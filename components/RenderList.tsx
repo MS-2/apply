@@ -13,7 +13,7 @@ type RenderListProps = Hit & {
     index: number
 };
 
-export const RenderList: React.FC<RenderListProps> = ({
+export const ArticleList: React.FC<RenderListProps> = ({
     author,
     created_at,
     objectID,
@@ -80,4 +80,3 @@ const styles = StyleSheet.create({
     },
 });
 
-export default RenderList;

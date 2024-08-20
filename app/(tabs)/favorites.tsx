@@ -2,15 +2,15 @@ import React, { useCallback } from "react";
 import { FlatList, RefreshControl } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { useFocusEffect } from "@react-navigation/native";
-import { RenderList } from "../../components/RenderList";
+import { ArticleList } from "../../components/RenderList";
 import { ITEM_HEIGHT, INITIAL_NUM_TO_RENDER, WINDOW_SIZE } from "@/constants";
-import { removeFavoritesSimple } from "@/data/Tasks";
-import ScreenWrapper from "@/components/ScreensWrapper";
+import { removeFromFavorite } from "@/data/favorites";
+import { ScreenWrapper } from "@/components/ScreensWrapper";
 import { useFavoritesQuery } from "@/hooks/useHackerNewsQuery";
 import { onlineManager } from "@tanstack/react-query";
 import { ConnectionBanner } from "@/components/ConnectionBanner";
 
-const FavoritesItemsScreen: React.FC = () => {
+const FavoritesScreen: React.FC = () => {
   const { data, error, refetch, isLoading, isFetching } = useFavoritesQuery();
 
   useFocusEffect(
@@ -31,7 +31,7 @@ const FavoritesItemsScreen: React.FC = () => {
         data={data}
         keyExtractor={({ objectID }) => objectID}
         renderItem={({ item, index }) => (
-          <RenderList index={index} {...item} onSwipeLeft={removeFavoritesSimple} />
+          <ArticleList index={index} {...item} onSwipeLeft={removeFromFavorite} />
         )}
         getItemLayout={(_data, index) => ({
           length: ITEM_HEIGHT,
@@ -48,4 +48,4 @@ const FavoritesItemsScreen: React.FC = () => {
   );
 };
 
-export default FavoritesItemsScreen;
+export default FavoritesScreen;

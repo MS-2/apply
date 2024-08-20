@@ -1,19 +1,18 @@
 import React, { useCallback, useState } from "react";
 import { FlatList, RefreshControl } from "react-native";
 import { useHackerQuery } from "@/hooks/useHackerNewsQuery";
-import { useSQLiteContext } from "expo-sqlite";
-import { RenderList } from '../../components/RenderList';
+import { ArticleList } from '../../components/RenderList';
 import { INITIAL_NUM_TO_RENDER, ITEM_HEIGHT, WINDOW_SIZE } from "@/constants";
-import { removeHitFromFeedSimple, addHitToFavoritesFromFeedSimple } from "@/data/Tasks";
+import { hitToFavorites, hitToDeleted } from "@/data/main";
 import { onlineManager } from "@tanstack/react-query";
-import ScreenWrapper from "@/components/ScreensWrapper";
+import { ScreenWrapper } from "@/components/ScreensWrapper";
 import { useDragState } from "@/hooks/dragStateContext";
 import { useFocusEffect } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
 import { ConnectionBanner } from "@/components/ConnectionBanner";
 
-const IndexScreen: React.FC = () => {
-  const db = useSQLiteContext();
+const MainScreen: React.FC = () => {
+
   const { isLoading, error, data, refetch, isFetching } = useHackerQuery();
 
   const { isDragging } = useDragState();
@@ -25,12 +24,12 @@ const IndexScreen: React.FC = () => {
   );
 
   const removeHit = useCallback(async (objectID: string) => {
-    await removeHitFromFeedSimple(objectID);
+    await hitToDeleted(objectID);
     refetch()
   }, []);
 
   const favoriteHit = useCallback(async (objectID: string) => {
-    await addHitToFavoritesFromFeedSimple(objectID);
+    await hitToFavorites(objectID);
     refetch()
   }, []);
 
@@ -44,11 +43,11 @@ const IndexScreen: React.FC = () => {
       )}
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
-        scrollEnabled={true}
+        scrollEnabled={false}
         data={data}
         keyExtractor={({ objectID }) => objectID}
         renderItem={({ item, index }) => (
-          <RenderList index={index} {...item} onSwipeRight={favoriteHit} onSwipeLeft={removeHit} />
+          <ArticleList index={index} {...item} onSwipeRight={favoriteHit} onSwipeLeft={removeHit} />
         )}
         getItemLayout={(_data, index) => ({
           length: ITEM_HEIGHT,
@@ -65,4 +64,4 @@ const IndexScreen: React.FC = () => {
   );
 }
 
-export default IndexScreen
+export default MainScreen

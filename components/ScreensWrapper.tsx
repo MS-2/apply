@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useHeaderHeight } from "@react-navigation/elements";
 
-const ScreenWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const ScreenWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const headerHeight = useHeaderHeight();
     return (
         <LinearGradient
@@ -18,5 +18,3 @@ const ScreenWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) =>
         </LinearGradient>
     );
 };
-
-export default ScreenWrapper;

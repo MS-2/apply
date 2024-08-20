@@ -1,23 +1,39 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet } from 'react-native';
-import { Button, Switch, Text } from 'react-native-paper';
-import ScreenWrapper from "@/components/ScreensWrapper";
+import { Button, Switch, Text, Dialog, Portal, Paragraph, Provider, Snackbar } from 'react-native-paper';
+import { ScreenWrapper } from "@/components/ScreensWrapper";
 import { UserPreferencesProvider, useUserPreferencesContext } from "@/providers/UserPreferences";
 import { useNotifications } from "@/providers/NotificationProvider";
-import { clearAllData } from "@/data/Tasks";
+import { clearAllLocalData } from "@/data/settings";
 
 export default () => (
     <UserPreferencesProvider>
-        <Settings />
+        <Provider>
+            <Settings />
+        </Provider>
     </UserPreferencesProvider>
 );
 
 const Settings: React.FC = () => {
     const { selectedPreferences, togglePreference } = useUserPreferencesContext();
     const { notification, setNotification } = useNotifications();
-
+    const [visible, setVisible] = useState(false);
+    const [snackbarVisible, setSnackbarVisible] = useState(false);
+    const showDialog = () => setVisible(true);
+    const hideDialog = () => setVisible(false);
+    const showSnackbar = () => setSnackbarVisible(true);
+    const hideSnackbar = () => setSnackbarVisible(false);
     const handleRestoreTips = () => {
         console.log("Tips restored");
+    };
+    const confirmClearLocalData = async () => {
+        hideDialog();
+        try {
+            await clearAllLocalData();
+            showSnackbar();
+        } catch (error) {
+            console.error("Error clearing local data:", error);
+        }
     };
 
     const handleToggleNotifications = () => {
@@ -28,7 +44,6 @@ const Settings: React.FC = () => {
     return (
         <ScreenWrapper>
             <View style={styles.container}>
-
                 <View style={styles.toggleContainer}>
                     <Text style={styles.label}>Android Notifications</Text>
                     <Switch
@@ -50,7 +65,7 @@ const Settings: React.FC = () => {
                     />
                 </View>
                 <View style={styles.toggleContainer}>
-                    <Text style={styles.label}>  Turn off all notifications.</Text>
+                    <Text style={styles.label}>Turn off all notifications.</Text>
                     <Switch
                         value={!notification} // This value should be managed based on the notification state
                         onValueChange={handleToggleNotifications}
@@ -61,7 +76,7 @@ const Settings: React.FC = () => {
                 </View>
                 <Button
                     mode="outlined"
-                    onPress={clearAllData}
+                    onPress={showDialog}
                     style={styles.button}
                     accessibilityLabel="Delete local data"
                     accessibilityHint="Deletes all locally stored data"
@@ -78,9 +93,28 @@ const Settings: React.FC = () => {
                 >
                     Restore Tips
                 </Button>
-
+                <Snackbar
+                    visible={snackbarVisible}
+                    onDismiss={hideSnackbar}
+                    duration={3000}
+                    action={{ label: 'Undo' }}>
+                    Local data has been cleared!
+                </Snackbar>
+                <Portal>
+                    <Dialog visible={visible} onDismiss={hideDialog}>
+                        <Dialog.Title>Confirm Deletion</Dialog.Title>
+                        <Dialog.Content>
+                            <Paragraph>Are you sure you want to delete all local data? This action cannot be undone.</Paragraph>
+                        </Dialog.Content>
+                        <Dialog.Actions>
+                            <Button onPress={hideDialog}>Cancel</Button>
+                            <Button onPress={confirmClearLocalData}>Delete</Button>
+                        </Dialog.Actions>
+                    </Dialog>
+                </Portal>
             </View>
         </ScreenWrapper>
+
     );
 };
 
@@ -88,9 +122,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'flex-end',
+        alignItems: 'center',
         paddingHorizontal: 40,
-        backgroundColor: '#333', // Dark background to contrast with white text
+        backgroundColor: '#333', // DarkDark background to contrast with white text
     },
     button: {
         marginVertical: 10,
@@ -98,9 +132,9 @@ const styles = StyleSheet.create({
     },
     toggleContainer: {
         flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        marginTop: 20,
-
+        width: '100%',
     },
     label: {
         fontSize: 18,
