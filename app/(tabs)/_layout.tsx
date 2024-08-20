@@ -2,7 +2,7 @@ import React from "react";
 import { Tabs } from "expo-router";
 import { StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { TabBarIcon } from "../../components/TabBarIcon";
+import { TabBarIcon } from "../../src/components/TabBarIcon";
 
 const TabLayout: React.FC = () => {
   return (

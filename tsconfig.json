@@ -3,10 +3,10 @@
   "compilerOptions": {
     "jsx": "react",
     "strict": true,
+    "baseUrl": "./src",
     "paths": {
       "*": ["./node_modules/*"],
-      "@/*": ["./*"],
-      "@/hooks": ["./*"]
+      "@/*": ["*"]
     },
     "types": ["react", "react-native", "react-native-webview"],
     "module": "esnext",
