@@ -1,6 +1,7 @@
 export const ITEM_HEIGHT = 80; // Ajusta esto según la altura de tus elementos
-
-const searchTerms = [
+export const INITIAL_NUM_TO_RENDER = 20;
+export const WINDOW_SIZE = 10;
+export const searchTerms = [
   "AI",
   "machine learning",
   "blockchain",

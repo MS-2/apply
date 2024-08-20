@@ -11,7 +11,6 @@ type RenderListProps = Hit & {
     onSwipeRight?: (objectID: string) => Promise<void>;
     onSwipeLeft?: (objectID: string) => Promise<void>;
     index: number
-    animation?: string
 };
 
 export const RenderList: React.FC<RenderListProps> = ({
@@ -23,9 +22,7 @@ export const RenderList: React.FC<RenderListProps> = ({
     onSwipeRight,
     onSwipeLeft,
     index,
-    animation
 }) => {
-    // console.log(animation)
     const date = new Date(created_at).toLocaleDateString();
     return (
         <Animatable.View animation="flipInX" duration={1000} delay={index * 300} >

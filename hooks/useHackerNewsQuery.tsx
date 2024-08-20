@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { AlgoliaResponse, Hit } from "@/types/algoliaResponse";
 import { useSQLiteContext } from "expo-sqlite";
-import { saveHitsToFeed, getHits, getDeletedHits } from "@/data/Tasks";
 import * as Notifications from 'expo-notifications';
 import { useUserPreferencesContext } from "@/providers/UserPreferences";
 

@@ -1,17 +1,18 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { FlatList, Text, RefreshControl } from "react-native";
+import React, { useCallback, useState } from "react";
+import { FlatList, RefreshControl } from "react-native";
 import { useHackerQuery } from "@/hooks/useHackerNewsQuery";
-import { Hit } from "@/types/algoliaResponse";
 import { useSQLiteContext } from "expo-sqlite";
 import { RenderList } from '../../components/RenderList';
-import { ITEM_HEIGHT } from "@/constants";
-import { removeHitFromFeed, addHitToFavorites, saveHitsToFeed, getDeletedHits, getHits, removeHitFromFeedSimple, addHitToFavoritesFromFeedSimple } from "@/data/Tasks";
+import { INITIAL_NUM_TO_RENDER, ITEM_HEIGHT, WINDOW_SIZE } from "@/constants";
+import { removeHitFromFeedSimple, addHitToFavoritesFromFeedSimple } from "@/data/Tasks";
 import { onlineManager } from "@tanstack/react-query";
 import ScreenWrapper from "@/components/ScreensWrapper";
 import { useDragState } from "@/hooks/dragStateContext";
 import { useFocusEffect } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
-export default function Home() {
+import { ConnectionBanner } from "@/components/ConnectionBanner";
+
+const IndexScreen: React.FC = () => {
   const db = useSQLiteContext();
   const { isLoading, error, data, refetch, isFetching } = useHackerQuery();
 
@@ -20,7 +21,7 @@ export default function Home() {
   useFocusEffect(
     useCallback(() => {
       refetch()
-    }, [data, db])
+    }, [refetch])
   );
 
   const removeHit = useCallback(async (objectID: string) => {
@@ -35,34 +36,33 @@ export default function Home() {
 
 
 
-  if (isLoading) {
-    return <ScreenWrapper><ActivityIndicator size="large" color="#FFF" /></ScreenWrapper>;
-  }
-
-  if (error && !onlineManager.isOnline()) {
-    return (<ScreenWrapper><Text>No internet connection and no local data available.</Text></ScreenWrapper >)
-  }
-
   return (
     <ScreenWrapper>
+      {isLoading && <ActivityIndicator size="large" color="#FFF" />}
+      {error && !onlineManager.isOnline() && (
+        <ConnectionBanner online={onlineManager.isOnline()} />
+      )}
       <FlatList
-        scrollEnabled={true}
         contentInsetAdjustmentBehavior="automatic"
+        scrollEnabled={true}
         data={data}
         keyExtractor={({ objectID }) => objectID}
-        renderItem={({ item, index }) => <RenderList index={index} {...item} onSwipeRight={favoriteHit} onSwipeLeft={removeHit} />}
-        getItemLayout={(_data, index) => (
-          { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
+        renderItem={({ item, index }) => (
+          <RenderList index={index} {...item} onSwipeRight={favoriteHit} onSwipeLeft={removeHit} />
         )}
-        initialNumToRender={20}
-        windowSize={10}
+        getItemLayout={(_data, index) => ({
+          length: ITEM_HEIGHT,
+          offset: ITEM_HEIGHT * index,
+          index,
+        })}
+        initialNumToRender={INITIAL_NUM_TO_RENDER}
+        windowSize={WINDOW_SIZE}
         refreshControl={
-          <RefreshControl
-            refreshing={isFetching}
-            onRefresh={refetch}
-          />
+          <RefreshControl refreshing={isFetching} onRefresh={refetch} />
         }
       />
     </ScreenWrapper>
   );
 }
+
+export default IndexScreen

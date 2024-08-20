@@ -1,52 +1,51 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import { FlatList, RefreshControl } from "react-native";
-import { Hit } from "@/types/algoliaResponse";
-import { useSQLiteContext } from "expo-sqlite";
-import { RenderList } from '../../components/RenderList'
-import { ITEM_HEIGHT } from "@/constants";
-import { useFocusEffect } from '@react-navigation/native';
-import { removeHitFromFavorites, removeFavoritesSimple } from "@/data/Tasks";
+import { ActivityIndicator } from "react-native-paper";
+import { useFocusEffect } from "@react-navigation/native";
+import { RenderList } from "../../components/RenderList";
+import { ITEM_HEIGHT, INITIAL_NUM_TO_RENDER, WINDOW_SIZE } from "@/constants";
+import { removeFavoritesSimple } from "@/data/Tasks";
 import ScreenWrapper from "@/components/ScreensWrapper";
 import { useFavoritesQuery } from "@/hooks/useHackerNewsQuery";
-import { ActivityIndicator } from "react-native-paper";
 import { onlineManager } from "@tanstack/react-query";
-export default function Fav() {
+import { ConnectionBanner } from "@/components/ConnectionBanner";
 
-  const { data, error, refetch, isLoading, isPending, isFetching } = useFavoritesQuery()
+const FavoritesItemsScreen: React.FC = () => {
+  const { data, error, refetch, isLoading, isFetching } = useFavoritesQuery();
+
   useFocusEffect(
     useCallback(() => {
-      refetch()
-    }, [data])
+      refetch();
+    }, [refetch])
   );
-  if (isLoading) {
-    return <ScreenWrapper><ActivityIndicator size="large" color="#FFF" /></ScreenWrapper>;
-  }
 
-  if (error && !onlineManager.isOnline()) {
-    return (<ScreenWrapper><></></ScreenWrapper >)
-  }
   return (
-
     <ScreenWrapper>
+      {isLoading && <ActivityIndicator size="large" color="#FFF" />}
+      {error && !onlineManager.isOnline() && (
+        <ConnectionBanner online={onlineManager.isOnline()} />
+      )}
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         scrollEnabled={true}
         data={data}
         keyExtractor={({ objectID }) => objectID}
-        renderItem={({ item, index }) => <RenderList index={index} {...item} onSwipeLeft={removeFavoritesSimple} />}
-        getItemLayout={(_data, index) => (
-          { length: ITEM_HEIGHT, offset: ITEM_HEIGHT * index, index }
+        renderItem={({ item, index }) => (
+          <RenderList index={index} {...item} onSwipeLeft={removeFavoritesSimple} />
         )}
-        initialNumToRender={20}
-        windowSize={10}
+        getItemLayout={(_data, index) => ({
+          length: ITEM_HEIGHT,
+          offset: ITEM_HEIGHT * index,
+          index,
+        })}
+        initialNumToRender={INITIAL_NUM_TO_RENDER}
+        windowSize={WINDOW_SIZE}
         refreshControl={
-          <RefreshControl
-            refreshing={isFetching}
-            onRefresh={refetch}
-          />
+          <RefreshControl refreshing={isFetching} onRefresh={refetch} />
         }
       />
-    </ScreenWrapper >
-
+    </ScreenWrapper>
   );
-}
+};
+
+export default FavoritesItemsScreen;

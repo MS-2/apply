@@ -1,15 +1,15 @@
 import React, { useState, useCallback } from "react";
-import { FlatList, RefreshControl, StyleSheet, Text } from "react-native";
+import { FlatList, RefreshControl } from "react-native";
 import RenderList from "@/components/RenderList";
-import { ITEM_HEIGHT } from "@/constants";
-import { Hit } from "@/types/algoliaResponse";
+import { INITIAL_NUM_TO_RENDER, ITEM_HEIGHT, WINDOW_SIZE } from "@/constants";
 import { useSQLiteContext } from "expo-sqlite";
 import { useFocusEffect } from "expo-router";
-import { removeHitFromDeleted, removeDeletedSimple } from "@/data/Tasks";
+import { removeDeletedSimple } from "@/data/Tasks";
 import ScreenWrapper from "@/components/ScreensWrapper";
-import { useDeletedQuery, useHackerQuery } from "@/hooks/useHackerNewsQuery";
+import { useDeletedQuery } from "@/hooks/useHackerNewsQuery";
 import { ActivityIndicator } from "react-native-paper";
 import { onlineManager } from "@tanstack/react-query";
+import { ConnectionBanner } from "@/components/ConnectionBanner";
 
 const DeletedItemsScreen: React.FC = () => {
   const db = useSQLiteContext();
@@ -22,15 +22,13 @@ const DeletedItemsScreen: React.FC = () => {
       refetch()
     }, [data, db])
   );
-  if (isLoading) {
-    return <ScreenWrapper><ActivityIndicator size="large" color="#FFF" /></ScreenWrapper>;
-  }
 
-  if (error && !onlineManager.isOnline()) {
-    return (<ScreenWrapper><></></ScreenWrapper >)
-  }
   return (
     <ScreenWrapper>
+      {isLoading && <ActivityIndicator size="large" color="#FFF" />}
+      {error && !onlineManager.isOnline() && (
+        <ConnectionBanner online={onlineManager.isOnline()} />
+      )}
       <FlatList
         scrollEnabled={true}
         contentInsetAdjustmentBehavior="automatic"
@@ -40,15 +38,12 @@ const DeletedItemsScreen: React.FC = () => {
         getItemLayout={(_data, index) => ({
           length: ITEM_HEIGHT,
           offset: ITEM_HEIGHT * index,
-          index
+          index,
         })}
-        initialNumToRender={20}
-        windowSize={10}
+        initialNumToRender={INITIAL_NUM_TO_RENDER}
+        windowSize={WINDOW_SIZE}
         refreshControl={
-          <RefreshControl
-            refreshing={isFetching}
-            onRefresh={refetch}
-          />
+          <RefreshControl refreshing={isFetching} onRefresh={refetch} />
         }
       />
     </ScreenWrapper>
