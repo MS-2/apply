@@ -1,12 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+  QueryFunction,
+  useInfiniteQuery,
+  useQuery,
+} from "@tanstack/react-query";
 import { AlgoliaResponse, Hit } from "@/types/algoliaResponse";
-
 import * as Notifications from "expo-notifications";
 import { useUserPreferencesContext } from "@/providers/UserPreferences";
 import { getFavoritesHits } from "@/data/favorites";
 import { getDeletedHits } from "@/data/deleted";
-import { fetchAlgoliaData } from "@/api";
+import { fetchAlgoliaData, fetchAlgoliaDataUsingInfinityQuery } from "@/api";
 import { STALE_TIME, RETRY, REFETCH_INTERVAL } from "@/constants";
+import { useNotifications } from "@/providers/NotificationProvider";
 
 const filterHitsByPreferences = (hits: Hit[], preferences: string[]): Hit[] => {
   return hits.filter((hit) =>
@@ -64,10 +68,30 @@ export const useMainQuery = () => {
           !favoritesIds.some((favorite) => favorite.objectID === hit.objectID)
       );
       await sendNotification(response, selectedPreferences, filteredHits);
+      if (filteredHits.length === 0) {
+        const response = await fetchAlgoliaData();
+        const deletedIds = await getDeletedHits();
+        const favoritesIds = await getFavoritesHits();
+        const filteredHits = response.hits.filter(
+          (hit) =>
+            !deletedIds.some((deleted) => deleted.objectID === hit.objectID) &&
+            !favoritesIds.some((favorite) => favorite.objectID === hit.objectID)
+        );
+        return filteredHits;
+      }
       return filteredHits;
     },
     staleTime: STALE_TIME,
     retry: RETRY,
     refetchInterval: REFETCH_INTERVAL,
+  });
+};
+
+export const useMainQueryUsingInfinity = () => {
+  return useInfiniteQuery({
+    queryKey: ["feed"],
+    queryFn: fetchAlgoliaDataUsingInfinityQuery,
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => lastPage.nextPage || false,
   });
 };

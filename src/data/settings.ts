@@ -1,3 +1,4 @@
+import { queryClient } from "@/../app/app";
 import { openDatabase } from "./db";
 
 export const clearAllLocalData = async () => {
@@ -11,9 +12,14 @@ export const clearAllLocalData = async () => {
   ];
   try {
     for (const table of tables) {
-      const result = await db.runAsync(`DELETE FROM ${table}`);
+      const result = await db
+        .runAsync(`DELETE FROM ${table}`)
+        .then((result) => {
+          queryClient.clear();
+          return result;
+        });
       console.log(
-        `All records removed from '${table}' table. Rows affected: ${result.changes}`
+        `All records removed from '${table}' table. Rows affected: ${result.changes} clear cache`
       );
     }
   } catch (error) {

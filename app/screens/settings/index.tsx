@@ -15,7 +15,7 @@ const Settings: React.FC = () => {
     const toggleDialog = () => setVisible(!visible);
     const handleToggleNotifications = () => {
         setNotification(!notification);
-        showSnackbar(notification ? "Notifications Turn Off!" : "Notifications Turn On!");
+        showSnackbar(notification ? `Notifications Turn On! ${notification}` : `Notifications Turn off! ${notification}`);
     };
     const handleToggleTheme = () => setTheme(theme === 'vene' ? 'default' : 'vene');
     const confirmClearLocalData = async () => {

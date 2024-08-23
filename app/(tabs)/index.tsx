@@ -1,61 +1,84 @@
-import React, { useCallback } from "react";
-import { FlatList, RefreshControl } from "react-native";
-import { useMainQuery } from "@/hooks/useMainQuery";
-import { ArticleList } from '../../src/components/RenderList';
-import { INITIAL_NUM_TO_RENDER, ITEM_HEIGHT, WINDOW_SIZE } from "@/constants";
+import React, { useCallback, useState } from "react";
+import { RefreshControl } from "react-native";
+import { useMainQueryUsingInfinity } from "@/hooks/useMainQuery";
+import { ArticleList } from '../../src/components/ArticleList';
+import { ITEM_HEIGHT } from "@/constants";
 import { hitToFavorites, hitToDeleted } from "@/data/main";
 import { onlineManager } from "@tanstack/react-query";
 import { ScreenWrapper } from "@/components/ScreensWrapper";
 import { useFocusEffect } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
 import { ConnectionBanner } from "@/components/ConnectionBanner";
+import { FlashList } from "@shopify/flash-list";
 
 const MainScreen: React.FC = () => {
-
-  const { isLoading, error, data, refetch, isFetching } = useMainQuery();
-
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, error, isFetching, isLoading } = useMainQueryUsingInfinity()
+  const articles = data?.pages.flatMap(page => page.posts) ?? []
   useFocusEffect(
     useCallback(() => {
-      refetch()
-    }, [refetch])
+      console.log(articles.length)
+      if (!isFetching) {
+        refetch();
+      }
+    }, [])
   );
 
+  const loadMore = async () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      await fetchNextPage();
+    }
+  };
   const removeHit = useCallback(async (objectID: string) => {
     await hitToDeleted(objectID);
-    refetch()
-  }, []);
+    if (!isFetching) {
+      refetch();
+    }
+  }, [refetch, isFetching]);
 
   const favoriteHit = useCallback(async (objectID: string) => {
     await hitToFavorites(objectID);
-    refetch()
-  }, []);
+    if (!isFetching) {
+      refetch();
+    }
+  }, [refetch, isFetching]);
 
-
+  if (isLoading) {
+    return <ActivityIndicator size="large" color="#FFF" />
+  }
 
   return (
     <ScreenWrapper>
-      {isLoading && <ActivityIndicator size="large" color="#FFF" />}
       {error && !onlineManager.isOnline() && (
         <ConnectionBanner online={onlineManager.isOnline()} />
       )}
-      <FlatList
+      <FlashList
+        estimatedItemSize={ITEM_HEIGHT}
         contentInsetAdjustmentBehavior="automatic"
-        scrollEnabled={true}
-        data={data}
+        data={articles}
         keyExtractor={({ objectID }) => objectID}
+        onLoad={(e) => console.log('first render time ', e.elapsedTimeInMs)}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.3}
         renderItem={({ item, index }) => (
-          <ArticleList index={index} {...item} onSwipeRight={favoriteHit} onSwipeLeft={removeHit} />
+          <ArticleList
+            index={index}
+            {...item}
+            onSwipeRight={favoriteHit}
+            onSwipeLeft={removeHit}
+          />
         )}
-        getItemLayout={(_data, index) => ({
-          length: ITEM_HEIGHT,
-          offset: ITEM_HEIGHT * index,
-          index,
-        })}
-        initialNumToRender={INITIAL_NUM_TO_RENDER}
-        windowSize={WINDOW_SIZE}
         refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={refetch} />
+          <RefreshControl
+            refreshing={isFetching}
+            onRefresh={refetch}
+          />
         }
+        ListFooterComponent={
+          isFetchingNextPage ? (
+            <ActivityIndicator size="large" color='#FFF' />
+          ) : null
+        }
+      // decelerationRate={0.3}
       />
     </ScreenWrapper>
   );

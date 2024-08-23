@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { FlatList, RefreshControl } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { useFocusEffect } from "@react-navigation/native";
-import { ArticleList } from "../../src/components/RenderList";
+import { ArticleList } from "../../src/components/ArticleList";
 import { ITEM_HEIGHT, INITIAL_NUM_TO_RENDER, WINDOW_SIZE } from "@/constants";
 import { removeFromFavorite } from "@/data/favorites";
 import { ScreenWrapper } from "@/components/ScreensWrapper";

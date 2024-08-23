@@ -25,7 +25,7 @@ export const ArticleList: React.FC<RenderListProps> = ({
 }) => {
     const date = new Date(created_at).toLocaleDateString();
     return (
-        <Animatable.View animation="flipInX" duration={1000} delay={index * 300} >
+        <Animatable.View animation="fadeIn" duration={500} delay={index * 300} >
             <SwipeableItem
                 onSwipeLeft={onSwipeLeft}
                 onSwipeRight={onSwipeRight}
@@ -49,6 +49,7 @@ export const ArticleList: React.FC<RenderListProps> = ({
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFFFF',
+        height: 80,
         borderBottomWidth: 1,
         borderColor: '#E0E0E0',
         borderRadius: 16,

@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { FlatList, RefreshControl } from "react-native";
-import { ArticleList } from "@/components/RenderList";
+import { ArticleList } from "@/components/ArticleList";
 import { INITIAL_NUM_TO_RENDER, ITEM_HEIGHT, WINDOW_SIZE } from "@/constants";
 import { useFocusEffect } from "expo-router";
 import { removeFromDeleted } from "@/data/deleted";

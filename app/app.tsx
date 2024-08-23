@@ -13,9 +13,11 @@ import { Text } from 'react-native'
 import * as SplashScreen from 'expo-splash-screen';
 import * as Notifications from "expo-notifications";
 import { UserPreferencesProvider } from '@/providers/UserPreferences';
+import { STALE_TIME } from '@/constants';
 // SplashScreen.preventAutoHideAsync();
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
+    defaultOptions: { queries: { staleTime: STALE_TIME, } },
     mutationCache: new MutationCache({
         onSuccess: async () => {
             const { expoPushToken } = useNotifications();
@@ -65,7 +67,6 @@ export default function AppProviders({ children }: AppProvidersProps) {
 
     useOnlineManager();
     useAppState(onAppStateChange);
-
     return (
         <PersistQueryClientProvider
             client={queryClient}
