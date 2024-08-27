@@ -8,11 +8,12 @@
       "*": ["./node_modules/*"],
       "@/*": ["*"]
     },
-    "types": ["react", "react-native", "react-native-webview"],
+    "types": ["react", "react-native", "react-native-webview", "jest"],
     "module": "esnext",
     "target": "es2017",
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
+  "exclude": ["node_modules"]
 }

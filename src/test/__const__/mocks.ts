@@ -1,0 +1,100 @@
+import { Hit } from "@/types/algoliaResponse";
+
+export const mockHits: Hit[] = [
+  {
+    id: 1,
+    _highlightResult: {
+      author: { matchLevel: "none", matchedWords: [], value: "Author1" },
+      comment_text: {
+        matchLevel: "none",
+        matchedWords: [],
+        value: "Sample comment",
+      },
+      story_title: {
+        matchLevel: "none",
+        matchedWords: [],
+        value: "React Native Basics",
+      },
+      story_url: {
+        matchLevel: "none",
+        matchedWords: [],
+        value: "https://example.com/1",
+      },
+    },
+    _tags: ["tag1"],
+    author: "Author1",
+    comment_text: "Sample comment",
+    created_at: "2024-08-09T22:37:25Z",
+    created_at_i: 1723243045,
+    objectID: "1",
+    parent_id: 1,
+    story_id: 1,
+    story_title: "React Native Basics",
+    story_url: "https://example.com/1",
+    updated_at: "2024-08-09T23:05:36Z",
+  },
+  {
+    id: 2,
+    _highlightResult: {
+      author: { matchLevel: "none", matchedWords: [], value: "Author2" },
+      comment_text: {
+        matchLevel: "none",
+        matchedWords: [],
+        value: "Sample comment 2",
+      },
+      story_title: {
+        matchLevel: "none",
+        matchedWords: [],
+        value: "Understanding TypeScript",
+      },
+      story_url: {
+        matchLevel: "none",
+        matchedWords: [],
+        value: "https://example.com/2",
+      },
+    },
+    _tags: ["tag2"],
+    author: "Author2",
+    comment_text: "Sample comment 2",
+    created_at: "2024-08-09T22:37:25Z",
+    created_at_i: 1723243046,
+    objectID: "2",
+    parent_id: 2,
+    story_id: 2,
+    story_title: "Understanding TypeScript",
+    story_url: "https://example.com/2",
+    updated_at: "2024-08-09T23:05:36Z",
+  },
+  {
+    id: 2,
+    _highlightResult: {
+      author: { matchLevel: "none", matchedWords: [], value: "Author1" },
+      comment_text: {
+        matchLevel: "none",
+        matchedWords: [],
+        value: "Sample comment",
+      },
+      story_title: {
+        matchLevel: "none",
+        matchedWords: [],
+        value: "React Native Basics",
+      },
+      story_url: {
+        matchLevel: "none",
+        matchedWords: [],
+        value: "https://example.com/1",
+      },
+    },
+    _tags: ["tag1"],
+    author: "Author1",
+    comment_text: "Sample comment",
+    created_at: "2024-08-09T22:37:25Z",
+    created_at_i: 1723243045,
+    objectID: "3",
+    parent_id: 1,
+    story_id: 1,
+    story_title: "React Native Basics",
+    story_url: "https://example.com/3",
+    updated_at: "2024-08-09T23:05:36Z",
+  },
+];

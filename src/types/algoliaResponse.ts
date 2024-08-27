@@ -2,7 +2,6 @@ export type HighlightResult = {
   matchLevel: string;
   matchedWords: string[];
   value: string;
-  // fullyHighlighted?: boolean; // Agregado para cubrir el nuevo campo opcional
 };
 
 type HighlightResultContainer = {
