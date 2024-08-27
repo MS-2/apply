@@ -1,32 +1,29 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, StyleSheet } from 'react-native';
 import { Button, Switch, Text, Dialog, Portal, Paragraph, Snackbar } from 'react-native-paper';
 import { ScreenWrapper } from "@/components/ScreensWrapper";
 import { useUserPreferencesContext } from "@/providers/UserPreferences";
 import { useNotifications } from "@/providers/NotificationProvider";
-import { clearAllLocalData } from "@/data/settings";
+import { useSettings } from "@/hooks/SettingsScreen";
 
 const Settings: React.FC = () => {
     const { selectedPreferences, togglePreference, theme, setTheme } = useUserPreferencesContext();
     const { notification, setNotification } = useNotifications();
-    const [visible, setVisible] = useState(false);
-    const [snackbar, setSnackbar] = useState({ visible: false, message: '' });
-    const showSnackbar = (message: string) => setSnackbar({ visible: true, message });
-    const toggleDialog = () => setVisible(!visible);
+    const {
+        visible,
+        snackbar,
+        showSnackbar,
+        hideSnackbar,
+        toggleDialog,
+        confirmClearLocalData
+    } = useSettings();
+
     const handleToggleNotifications = () => {
         setNotification(!notification);
-        showSnackbar(notification ? `Notifications Turn On! ${notification}` : `Notifications Turn off! ${notification}`);
+        showSnackbar(notification ? `Notifications Turned On!` : `Notifications Turned Off!`);
     };
+
     const handleToggleTheme = () => setTheme(theme === 'vene' ? 'default' : 'vene');
-    const confirmClearLocalData = async () => {
-        toggleDialog();
-        try {
-            await clearAllLocalData();
-            showSnackbar("Local data has been cleared!");
-        } catch {
-            showSnackbar("Error clearing local data");
-        }
-    };
 
     return (
         <ScreenWrapper>
@@ -53,7 +50,7 @@ const Settings: React.FC = () => {
                     />
                 </View>
                 <View style={styles.toggleContainer}>
-                    <Text style={styles.label}>Venezuelan Theme</Text>
+                    <Text style={styles.label}>Tricolor Theme</Text>
                     <Switch
                         value={theme === 'vene'}
                         onValueChange={handleToggleTheme}
@@ -61,14 +58,14 @@ const Settings: React.FC = () => {
                     />
                 </View>
                 <Button mode="outlined" onPress={toggleDialog} style={styles.button}>
-                    Delete Local Data
+                    <Text style={styles.labelDanger}>Delete all Local data and cache!</Text>
                 </Button>
 
                 <Snackbar
                     visible={snackbar.visible}
-                    onDismiss={() => setSnackbar({ visible: false, message: '' })}
+                    onDismiss={hideSnackbar}
                     duration={1000}
-                    action={{ label: 'Undo', onPress: () => setSnackbar({ visible: false, message: '' }) }}
+                    action={{ label: 'Undo', onPress: hideSnackbar }}
                 >
                     {snackbar.message}
                 </Snackbar>
@@ -113,6 +110,10 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#fff',
     },
+    labelDanger: {
+        fontSize: 16,
+        color: '#ff0000'
+    },
     toggle: {
         transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }],
     },
@@ -120,7 +121,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         backgroundColor: '#333',
         elevation: 4
-
     },
 });
 

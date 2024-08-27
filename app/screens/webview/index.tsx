@@ -1,10 +1,10 @@
 import React from "react";
 import { WebView } from 'react-native-webview';
 import { useLocalSearchParams } from 'expo-router';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { HighlightResult } from "@/types/algoliaResponse";
 import { ScreenWrapper } from "@/components/ScreensWrapper";
-import { ActivityIndicator } from "react-native-paper";
+import { ActivityIndicator, Text } from "react-native-paper";
 const WebViewScreen = () => {
     const { value } = useLocalSearchParams<HighlightResult>();
 

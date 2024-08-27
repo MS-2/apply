@@ -1,8 +1,8 @@
 import { saveHits } from "@/hooks/MainScreen/data";
 import { Hit, AlgoliaResponse } from "@/types/algoliaResponse";
+import { ALGOLIA_API_URL } from "@/utils/constants";
 import { sendNotification } from "@/utils/notifications/sendNotification";
 import { sanitizeResponse } from "@/utils/utilitys";
-import { ALGOLIA_API_URL } from "..";
 
 export const fetchData = async (
   totalPages: number = 1,

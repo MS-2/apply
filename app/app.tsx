@@ -1,18 +1,19 @@
-import React, { ReactNode, Suspense, useLayoutEffect } from 'react';
+import React, { ReactNode, Suspense, useLayoutEffect, useState } from 'react';
 import { AppStateStatus, Platform } from 'react-native';
 import { NotificationProvider, useNotifications } from '@/providers/NotificationProvider';
 import { focusManager, MutationCache, QueryClient } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { SQLiteProvider } from 'expo-sqlite';
-import { useOnlineManager } from '@/hooks/useOnlineManager';
-import { useAppState } from '@/hooks/useAppState';
-import { setupDatabase } from '@/data/setupDatabase';
-import { Text } from 'react-native'
+import { useAppState } from '@/utils/useAppState';
+import { setupDatabase } from '@/utils/sql_util/setupDatabase';
 import { UserPreferencesProvider } from '@/providers/UserPreferences';
 import { REFETCH_INTERVAL, RETRY, STALE_TIME } from '@/utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from "expo-notifications";
+import { ActivityIndicator } from 'react-native-paper';
+import { useOnlineManager } from '@/utils/useOnlineManager';
+import OverlayMessage from './overlay';
 
 export const queryClient = new QueryClient({
     defaultOptions: {
@@ -31,7 +32,7 @@ export const queryClient = new QueryClient({
                         title: "Success",
                         body: "Your mutation was successful!",
                     },
-                    trigger: null, // Envía la notificación inmediatamente
+                    trigger: null
                 });
             }
         },
@@ -65,10 +66,26 @@ type AppProvidersProps = {
 };
 
 export default function AppProviders({ children }: AppProvidersProps) {
+
+    const [showOverlay, setShowOverlay] = useState(true);
+
+
+
+    const handleCloseOverlay = () => {
+        setShowOverlay(false);
+    };
+
     useLayoutEffect(() => {
+        const checkOverlayShown = async () => {
+            const overlayShown = await AsyncStorage.getItem('@overlay_shown');
+            if (!overlayShown) {
+                setShowOverlay(true);
+            }
+        };
+
+        checkOverlayShown();
         setupDatabase();
     }, []);
-
     useOnlineManager();
     useAppState(onAppStateChange);
     return (
@@ -81,10 +98,11 @@ export default function AppProviders({ children }: AppProvidersProps) {
                     queryClient.invalidateQueries()
                 })
             }}>
-            <Suspense fallback={<Text>Loading...</Text>}>
-                <SQLiteProvider databaseName="test.db">
+            <Suspense fallback={<ActivityIndicator animating size="large" />}>
+                <SQLiteProvider databaseName="test.db" useSuspense>
                     <NotificationProvider>
                         <UserPreferencesProvider>
+                            {showOverlay && <OverlayMessage onClose={handleCloseOverlay} />}
                             {children}
                         </UserPreferencesProvider>
                     </NotificationProvider>

@@ -4,7 +4,7 @@ import { Link } from "expo-router";
 import { SwipeableItem } from "@/components/SwipeableItem/SwipeableItem";
 import { Hit } from "@/types/algoliaResponse";
 import * as Animatable from "react-native-animatable";
-import { Card, Title, IconButton, Subheading } from "react-native-paper";
+import { Card, Title, IconButton, Subheading, Paragraph } from "react-native-paper";
 
 type RenderListProps = Hit & {
     onSwipeRight?: () => Promise<void>;
@@ -47,6 +47,7 @@ export const ArticleCard: React.FC<RenderListProps> = ({
                     <Card.Content>
                         <Title style={styles.title}>{story_title}</Title>
                         <ArticleHeader author={author} date={date} />
+                        <Paragraph>Source : {story_url ?? 'N/A'}</Paragraph>
                     </Card.Content>
                     <ArticleActions story_url={story_url} />
                 </Card>

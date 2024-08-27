@@ -1,3 +1,4 @@
+export const ALGOLIA_API_URL = "https://hn.algolia.com/api/v1/search_by_date";
 export const ITEM_HEIGHT = 250; // height per article
 export const INITIAL_NUM_TO_RENDER = 10;
 export const WINDOW_SIZE = 10;

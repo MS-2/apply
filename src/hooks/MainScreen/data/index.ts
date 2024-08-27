@@ -1,12 +1,12 @@
-import { openDatabase } from "@/data/setupDatabase";
+import { openDatabase } from "@/utils/sql_util/setupDatabase";
 import { Hit } from "@/types/algoliaResponse";
 
 // SQL Queries as constants
-const SQL_INSERT_HIT = `INSERT or REPLACE INTO hits (id, objectID, author, created_at, created_at_i, parent_id, story_id, story_title, story_url, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+const SQL_INSERT_HIT = `INSERT or REPLACE INTO hits (id, objectID, author, created_at, story_id, story_title, story_url) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
 const SQL_SELECT_HITS = `SELECT * from hits`;
 
-const SQL_INSERT_FAVORITE = `INSERT INTO favorites (objectID, author, comment_text, created_at, created_at_i, parent_id, story_id, story_title, story_url, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+const SQL_INSERT_FAVORITE = `INSERT INTO favorites (objectID, author, created_at, story_id, story_title, story_url) VALUES (?, ?, ?, ?, ?, ?)`;
 
 const SQL_DELETE_HIT = `DELETE FROM hits WHERE objectID = ?`;
 
@@ -34,12 +34,9 @@ export const saveHits = async (hits: Hit[]) => {
         hit.objectID,
         hit.author,
         hit.created_at,
-        hit.created_at_i,
-        hit.parent_id,
         hit.story_id,
         hit.story_title,
         hit.story_url,
-        hit.updated_at,
       ]);
     }
   } catch (error) {
@@ -53,14 +50,10 @@ export const addToFavorites = async (hit: Hit) => {
     db.runAsync(SQL_INSERT_FAVORITE, [
       hit.objectID,
       hit.author,
-      hit.comment_text,
       hit.created_at,
-      hit.created_at_i,
-      hit.parent_id,
       hit.story_id,
       hit.story_title,
       hit.story_url,
-      hit.updated_at,
     ]);
     await db.runAsync(SQL_DELETE_HIT, [hit.objectID]);
   } catch (error) {

@@ -1,4 +1,4 @@
-import { openDatabase } from "@/data/setupDatabase";
+import { openDatabase } from "@/utils/sql_util/setupDatabase";
 import { Hit } from "@/types/algoliaResponse";
 
 // SQL Queries as constants

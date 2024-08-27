@@ -1,5 +1,5 @@
 import { queryClient } from "@/../app/app";
-import { openDatabase } from "./setupDatabase";
+import { openDatabase } from "@/utils/sql_util/setupDatabase";
 
 // Constantes SQL
 const DELETE_FROM_TABLE = (table: string) => `DELETE FROM ${table}`;
