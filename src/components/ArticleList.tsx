@@ -1,84 +1,80 @@
-import React from "react";
-import { TouchableOpacity, View, StyleSheet } from "react-native";
-import { Text } from 'react-native-paper';
+import React, { useState } from "react";
+import { View } from "react-native";
 import { Link } from "expo-router";
 import { SwipeableItem } from "@/components/SwipeableItem";
 import { Hit } from "@/types/algoliaResponse";
 import * as Animatable from 'react-native-animatable';
+import { Card, Title, Paragraph, IconButton, Subheading } from 'react-native-paper';
 
-// Define the type for the component props
 type RenderListProps = Hit & {
-    onSwipeRight?: (objectID: string) => Promise<void>;
-    onSwipeLeft?: (objectID: string) => Promise<void>;
-    index: number
+    onSwipeRight?: () => Promise<void>;
+    onSwipeLeft?: () => Promise<void>;
+    index: number;
+
 };
 
 export const ArticleList: React.FC<RenderListProps> = ({
     author,
     created_at,
-    objectID,
     story_title,
     story_url,
+    story_id,
+    objectID,
     onSwipeRight,
     onSwipeLeft,
-    index,
+    index
 }) => {
-    const date = new Date(created_at).toLocaleDateString();
+    const date = new Date(created_at).toLocaleDateString()
+    const [isFavorite, setIsFavorite] = useState(false);
+    const handleFavoritePress = () => {
+        setIsFavorite(!isFavorite); // Toggle the favorite state
+    };
     return (
         <Animatable.View animation="fadeIn" duration={500} delay={index * 300} >
             <SwipeableItem
                 onSwipeLeft={onSwipeLeft}
                 onSwipeRight={onSwipeRight}
-                objectID={objectID}
             >
-                <View style={styles.container}>
-                    <Link href={{ pathname: "/screens/webview", params: { value: story_url } }} asChild>
-                        <TouchableOpacity style={styles.touchable}>
-                            <Text style={styles.title}>
-                                {story_title ?? "N/A"}
-                            </Text>
-                            <Text style={styles.subtitle}>Author : {`${author} - ${date}`}</Text>
-                        </TouchableOpacity>
-                    </Link>
-                </View>
+                <Card style={{ margin: 10, elevation: 5 }}>
+                    <Card.Content>
+                        <Title style={{ fontSize: 18, fontWeight: 'bold', color: '#333' }} >
+                            {story_title}
+                        </Title>
+
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+                            <IconButton
+                                icon="account"
+                                size={32}
+                            />
+                            <Subheading style={{ color: '#666' }}>
+                                {author} - {date}
+                            </Subheading>
+
+                        </View>
+
+                        <Paragraph style={{ color: '#666', marginLeft: 20 }}>
+                            {JSON.stringify({ story_id, objectID }, null, 2)}
+                        </Paragraph>
+
+                    </Card.Content>
+                    <Card.Actions>
+                        <Link href={{ pathname: "/screens/webview", params: { value: story_url } }} asChild>
+                            <IconButton
+                                icon="open-in-new"
+                                size={32}
+                            />
+                        </Link>
+                        <IconButton
+                            icon="star"
+                            id='star'
+                            size={32}
+                            iconColor={isFavorite ? 'yellow' : 'gray'} // Change color based on state
+                            onPress={handleFavoritePress} // Handle press event
+                            animated
+                        />
+                    </Card.Actions>
+                </Card>
             </SwipeableItem>
         </Animatable.View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#FFFFFF',
-        height: 80,
-        borderBottomWidth: 1,
-        borderColor: '#E0E0E0',
-        borderRadius: 16,
-        flexDirection: 'row',
-        margin: 8,
-        marginBottom: 10,
-        padding: 10,
-        paddingBottom: 20,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 2,
-    },
-    touchable: {
-        flex: 1,
-        padding: 10,
-        borderRadius: 8,
-    },
-    title: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 4,
-    },
-    subtitle: {
-        fontSize: 14,
-        color: '#555',
-        textDecorationLine: 'underline'
-    },
-});
-

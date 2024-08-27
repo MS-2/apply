@@ -14,6 +14,7 @@ type HighlightResultContainer = {
 
 export type Hit = {
   _highlightResult: HighlightResultContainer;
+  id: number;
   _tags: string[];
   author: string;
   comment_text: string;

@@ -1,43 +1,63 @@
-import React, { useCallback } from "react";
-import { FlatList, RefreshControl } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import React, { useCallback, useEffect, useState } from "react";
+import { FlatList, Text } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { ArticleList } from "../../src/components/ArticleList";
 import { ITEM_HEIGHT, INITIAL_NUM_TO_RENDER, WINDOW_SIZE } from "@/constants";
 import { removeFromFavorite } from "@/data/favorites";
 import { ScreenWrapper } from "@/components/ScreensWrapper";
-import { onlineManager } from "@tanstack/react-query";
-import { ConnectionBanner } from "@/components/ConnectionBanner";
-import { useFavoritesQuery } from "@/hooks/useFavoritesQuery";
+import { Hit } from "@/types/algoliaResponse";
+import { openDatabase } from "@/data/db";
 
+
+export const getFavorites = async (): Promise<Hit[]> => {
+  const db = await openDatabase();
+  const hits = await db.getAllAsync<Hit>("SELECT * from favorites");
+  return hits;
+};
 const FavoritesScreen: React.FC = () => {
-  const { data, error, refetch, isLoading, isFetching } = useFavoritesQuery();
-
+  const [favorites, setFavorites] = useState<Hit[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   useFocusEffect(
     useCallback(() => {
-      refetch();
-    }, [refetch])
+      const fetchFavorites = async () => {
+        try {
+          const favoriteIDs = await getFavorites();
+          console.log('favoriteIDs : ', favoriteIDs.length)
+          setFavorites(favoriteIDs);
+        } catch (error) {
+          setError('Failed to load favorites');
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchFavorites();
+    }, [])
   );
 
-  const removeFavorite = useCallback(async (objectID: string) => {
-    await removeFromFavorite(objectID);
-    refetch()
-  }, []);
 
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>{error}</Text>;
+  }
 
   return (
     <ScreenWrapper>
-      {isLoading && <ActivityIndicator size="large" color="#FFF" />}
-      {error && !onlineManager.isOnline() && (
-        <ConnectionBanner online={onlineManager.isOnline()} />
-      )}
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
-        scrollEnabled={true}
-        data={data}
+        data={favorites}
         keyExtractor={({ objectID }) => objectID}
         renderItem={({ item, index }) => (
-          <ArticleList index={index} {...item} onSwipeLeft={removeFavorite} />
+          <ArticleList
+            index={index}
+            {...item}
+            onSwipeLeft={() => removeFromFavorite(item.objectID)}
+          />
         )}
         getItemLayout={(_data, index) => ({
           length: ITEM_HEIGHT,
@@ -46,9 +66,6 @@ const FavoritesScreen: React.FC = () => {
         })}
         initialNumToRender={INITIAL_NUM_TO_RENDER}
         windowSize={WINDOW_SIZE}
-        refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={refetch} />
-        }
       />
     </ScreenWrapper>
   );

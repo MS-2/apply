@@ -6,9 +6,9 @@ export const setupDatabase = async () => {
   await db.execAsync(`
     PRAGMA journal_mode = WAL;
     CREATE TABLE IF NOT EXISTS hits (
-      objectID TEXT PRIMARY KEY NOT NULL,
+      id INTEGER PRIMARY KEY,
+      objectID TEXT ,
       author TEXT,
-      comment_text TEXT,
       created_at TEXT,
       created_at_i TEXT,
       parent_id TEXT,
@@ -40,14 +40,10 @@ export const setupDatabase = async () => {
   CREATE TABLE IF NOT EXISTS deleted (
     objectID TEXT PRIMARY KEY NOT NULL,
     author TEXT,
-    comment_text TEXT,
     created_at TEXT,
-    created_at_i TEXT,
-    parent_id TEXT,
     story_id TEXT,
     story_title TEXT,
     story_url TEXT,
-    updated_at TEXT
   );
   `);
 

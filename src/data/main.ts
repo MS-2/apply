@@ -1,32 +1,86 @@
 import { Hit } from "@/types/algoliaResponse";
 import { openDatabase } from "./db";
 
+// SQL Queries as constants
+const SQL_INSERT_HIT = `INSERT or REPLACE INTO hits (id, objectID, author, created_at, created_at_i, parent_id, story_id, story_title, story_url, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+const SQL_SELECT_HITS = `SELECT * from hits`;
+
+const SQL_INSERT_FAVORITE = `INSERT INTO favorites (objectID, author, comment_text, created_at, created_at_i, parent_id, story_id, story_title, story_url, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+const SQL_DELETE_HIT = `DELETE FROM hits WHERE objectID = ?`;
+
+const SQL_INSERT_DELETED = `INSERT INTO deleted (objectID, author, created_at, story_id, story_title, story_url) VALUES (?, ?, ?, ?, ?, ?)`;
+
+// Functions using the constants
 export const getHits = async (): Promise<Hit[]> => {
   const db = await openDatabase();
-  const hits = await db.getAllAsync<Hit>("SELECT * from hits");
-  return hits;
+  try {
+    const hits = await db.getAllAsync<Hit>(SQL_SELECT_HITS);
+    return hits;
+  } catch (error) {
+    console.error("Error fetching hits:", error);
+    // Optionally, you can return an empty array or rethrow the error depending on your needs
+    return [];
+    // throw error;
+  }
 };
-
-export const hitToDeleted = async (objectID: string) => {
+export const saveHits = async (hits: Hit[]) => {
   const db = await openDatabase();
   try {
-    await db.runAsync(`INSERT INTO deletedHits (objectID) VALUES (?)`, [
-      objectID,
-    ]);
-    await db.runAsync(`DELETE FROM hits WHERE objectID = ?`, [objectID]);
+    for (const hit of hits) {
+      await db.runAsync(SQL_INSERT_HIT, [
+        null,
+        hit.objectID,
+        hit.author,
+        hit.created_at,
+        hit.created_at_i,
+        hit.parent_id,
+        hit.story_id,
+        hit.story_title,
+        hit.story_url,
+        hit.updated_at,
+      ]);
+    }
   } catch (error) {
-    console.error("Error removing item:", error);
+    console.error("Error saving hits:", error);
   }
 };
 
-export const hitToFavorites = async (objectID: string) => {
+export const addToFavorites = async (hit: Hit) => {
   const db = await openDatabase();
   try {
-    await db.runAsync(`INSERT INTO favoriteHits (objectID) VALUES (?)`, [
-      objectID,
+    db.runAsync(SQL_INSERT_FAVORITE, [
+      hit.objectID,
+      hit.author,
+      hit.comment_text,
+      hit.created_at,
+      hit.created_at_i,
+      hit.parent_id,
+      hit.story_id,
+      hit.story_title,
+      hit.story_url,
+      hit.updated_at,
     ]);
-    await db.runAsync(`DELETE FROM hits WHERE objectID = ?`, [objectID]);
+    await db.runAsync(SQL_DELETE_HIT, [hit.objectID]);
   } catch (error) {
-    console.error("Error removing item:", error);
+    console.error("Error saving to favorites:", error);
+  }
+};
+
+export const addToDeletes = async (hit: Hit) => {
+  const db = await openDatabase();
+  try {
+    db.runAsync(SQL_INSERT_DELETED, [
+      hit.objectID,
+      hit.author,
+      hit.created_at,
+      hit.story_id,
+      hit.story_title,
+      hit.story_url,
+    ]);
+    await db.runAsync(SQL_DELETE_HIT, [hit.objectID]);
+  } catch (error) {
+    console.error("Error saving to deleted:", error);
   }
 };

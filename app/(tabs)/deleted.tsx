@@ -1,40 +1,71 @@
-import React, { useCallback } from "react";
-import { FlatList, RefreshControl } from "react-native";
+import React, { useCallback, useState } from "react";
+import { FlatList, Text } from "react-native";
 import { ArticleList } from "@/components/ArticleList";
 import { INITIAL_NUM_TO_RENDER, ITEM_HEIGHT, WINDOW_SIZE } from "@/constants";
 import { useFocusEffect } from "expo-router";
 import { removeFromDeleted } from "@/data/deleted";
 import { ScreenWrapper } from "@/components/ScreensWrapper";
-import { ActivityIndicator } from "react-native-paper";
 import { onlineManager } from "@tanstack/react-query";
 import { ConnectionBanner } from "@/components/ConnectionBanner";
-import { useDeletedQuery } from "@/hooks/useDeletedQuery";
-const DeletedScreen: React.FC = () => {
-  const { isLoading, error, data, refetch, isFetching } = useDeletedQuery();
+import { Hit } from "@/types/algoliaResponse";
+import { openDatabase } from "@/data/db";
 
+const getHits = async (): Promise<Hit[]> => {
+  const db = await openDatabase();
+  const hits = await db.getAllAsync<Hit>("SELECT * from deleted");
+  return hits;
+};
+const DeletedScreen: React.FC = () => {
+
+  const [deletes, setFavorites] = useState<Hit[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   useFocusEffect(
     useCallback(() => {
-      refetch()
-    }, [refetch])
+      const fetchFavorites = async () => {
+        try {
+          const favoriteIDs = await getHits();
+          console.log('favoriteIDs : ', favoriteIDs.length)
+          setFavorites(favoriteIDs);
+        } catch (error) {
+          setError('Failed to load deletes');
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchFavorites();
+    }, [])
   );
 
-  const removeDeleted = useCallback(async (objectID: string) => {
-    await removeFromDeleted(objectID);
-    refetch()
-  }, []);
+
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>{error}</Text>;
+  }
+
+
 
   return (
     <ScreenWrapper>
-      {isLoading && <ActivityIndicator size="large" color="#FFF" />}
-      {error && !onlineManager.isOnline() && (
+      {false && !onlineManager.isOnline() && (
         <ConnectionBanner online={onlineManager.isOnline()} />
       )}
       <FlatList
         scrollEnabled={true}
         contentInsetAdjustmentBehavior="automatic"
-        data={data}
+        data={deletes}
         keyExtractor={({ objectID }) => objectID}
-        renderItem={({ item, index }) => <ArticleList index={index} {...item} onSwipeRight={removeDeleted} />}
+        renderItem={({ item, index }) =>
+          <ArticleList
+            index={index}
+            {...item}
+            onSwipeRight={() => removeFromDeleted(item.objectID)}
+          />}
         getItemLayout={(_data, index) => ({
           length: ITEM_HEIGHT,
           offset: ITEM_HEIGHT * index,
@@ -42,9 +73,6 @@ const DeletedScreen: React.FC = () => {
         })}
         initialNumToRender={INITIAL_NUM_TO_RENDER}
         windowSize={WINDOW_SIZE}
-        refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={refetch} />
-        }
       />
     </ScreenWrapper>
   );

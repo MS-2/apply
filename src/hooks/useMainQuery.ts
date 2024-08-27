@@ -1,16 +1,10 @@
-import {
-  QueryFunction,
-  useInfiniteQuery,
-  useQuery,
-} from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { AlgoliaResponse, Hit } from "@/types/algoliaResponse";
 import * as Notifications from "expo-notifications";
 import { useUserPreferencesContext } from "@/providers/UserPreferences";
 import { getFavoritesHits } from "@/data/favorites";
 import { getDeletedHits } from "@/data/deleted";
-import { fetchAlgoliaData, fetchAlgoliaDataUsingInfinityQuery } from "@/api";
-import { STALE_TIME, RETRY, REFETCH_INTERVAL } from "@/constants";
-import { useNotifications } from "@/providers/NotificationProvider";
+import { fetchAlgoliaData, fetchUsingInfinityQuery } from "@/api";
 
 const filterHitsByPreferences = (hits: Hit[], preferences: string[]): Hit[] => {
   return hits.filter((hit) =>
@@ -20,7 +14,7 @@ const filterHitsByPreferences = (hits: Hit[], preferences: string[]): Hit[] => {
   );
 };
 
-const sendNotification = async (
+export const sendNotification = async (
   response: AlgoliaResponse,
   selectedPreferences: string[],
   filteredHits: Hit[]
@@ -54,43 +48,44 @@ const sendNotification = async (
   }
 };
 
-export const useMainQuery = () => {
+export const sanitizeResponse = (response: AlgoliaResponse) => {
+  const seenStoryTitles = new Set<string>();
+  return response.hits.filter((hit) => {
+    const normalizedTitle = hit.story_title?.trim().toLowerCase();
+    if (normalizedTitle && !seenStoryTitles.has(normalizedTitle)) {
+      seenStoryTitles.add(normalizedTitle);
+      return true;
+    }
+    return false;
+  });
+};
+
+const customFunctionWithParam = async (pageParam: number) => {
   const { selectedPreferences } = useUserPreferencesContext();
+  const response = await fetchAlgoliaData(pageParam);
+  const deletedIds = await getDeletedHits();
+  const favoritesIds = await getFavoritesHits();
+  // const filteredHits = sanitizeResponse(response).filter(
+  //   (hit) =>
+  //     !deletedIds.some((deleted) => deleted.objectID === hit.objectID) &&
+  //     !favoritesIds.some((favorite) => favorite.objectID === hit.objectID)
+  // );
+  const filteredHits = sanitizeResponse(response);
+  await sendNotification(response, selectedPreferences, filteredHits);
+  return filteredHits;
+};
+
+export const useMainQuery = (pageParam: number) => {
   return useQuery<Hit[]>({
     queryKey: ["hackernews"],
-    queryFn: async () => {
-      const response = await fetchAlgoliaData();
-      const deletedIds = await getDeletedHits();
-      const favoritesIds = await getFavoritesHits();
-      const filteredHits = response.hits.filter(
-        (hit) =>
-          !deletedIds.some((deleted) => deleted.objectID === hit.objectID) &&
-          !favoritesIds.some((favorite) => favorite.objectID === hit.objectID)
-      );
-      await sendNotification(response, selectedPreferences, filteredHits);
-      if (filteredHits.length === 0) {
-        const response = await fetchAlgoliaData();
-        const deletedIds = await getDeletedHits();
-        const favoritesIds = await getFavoritesHits();
-        const filteredHits = response.hits.filter(
-          (hit) =>
-            !deletedIds.some((deleted) => deleted.objectID === hit.objectID) &&
-            !favoritesIds.some((favorite) => favorite.objectID === hit.objectID)
-        );
-        return filteredHits;
-      }
-      return filteredHits;
-    },
-    staleTime: STALE_TIME,
-    retry: RETRY,
-    refetchInterval: REFETCH_INTERVAL,
+    queryFn: () => customFunctionWithParam(pageParam),
   });
 };
 
 export const useMainQueryUsingInfinity = () => {
   return useInfiniteQuery({
     queryKey: ["feed"],
-    queryFn: fetchAlgoliaDataUsingInfinityQuery,
+    queryFn: fetchUsingInfinityQuery,
     initialPageParam: 0,
     getNextPageParam: (lastPage) => lastPage.nextPage || false,
   });

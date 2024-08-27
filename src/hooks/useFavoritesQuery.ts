@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Hit } from "@/types/algoliaResponse";
 import { fetchAlgoliaData } from "@/api";
 import { getFavoritesHits } from "@/data/favorites";
-import { STALE_TIME, RETRY, REFETCH_INTERVAL } from "@/constants";
 
 export const useFavoritesQuery = () => {
   return useQuery<Hit[]>({
@@ -22,8 +21,5 @@ export const useFavoritesQuery = () => {
         return []; // Devolver un array vacío en caso de error
       }
     },
-    staleTime: STALE_TIME,
-    retry: RETRY,
-    refetchInterval: REFETCH_INTERVAL,
   });
 };

@@ -1,6 +1,5 @@
 import React, { ReactNode, Suspense, useLayoutEffect } from 'react';
 import { AppStateStatus, Platform } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NotificationProvider, useNotifications } from '@/providers/NotificationProvider';
 import { focusManager, MutationCache, QueryClient } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
@@ -10,14 +9,19 @@ import { useOnlineManager } from '@/hooks/useOnlineManager';
 import { useAppState } from '@/hooks/useAppState';
 import { setupDatabase } from '@/data/setupDatabase';
 import { Text } from 'react-native'
-import * as SplashScreen from 'expo-splash-screen';
-import * as Notifications from "expo-notifications";
 import { UserPreferencesProvider } from '@/providers/UserPreferences';
-import { STALE_TIME } from '@/constants';
-// SplashScreen.preventAutoHideAsync();
+import { REFETCH_INTERVAL, RETRY, STALE_TIME } from '@/constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from "expo-notifications";
 
 export const queryClient = new QueryClient({
-    defaultOptions: { queries: { staleTime: STALE_TIME, } },
+    defaultOptions: {
+        queries: {
+            staleTime: STALE_TIME,
+            retry: RETRY,
+            refetchInterval: REFETCH_INTERVAL,
+        }
+    },
     mutationCache: new MutationCache({
         onSuccess: async () => {
             const { expoPushToken } = useNotifications();

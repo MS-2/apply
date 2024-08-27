@@ -1,28 +1,39 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useRef, useState } from 'react';
 import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SwipeAction } from './SwipeAction';
+import { router } from 'expo-router';
 
 type SwipeableItemProps = {
   children: ReactNode;
-  onSwipeRight?: (objectID: string) => Promise<void>;
-  onSwipeLeft?: (objectID: string) => Promise<void>;
-  objectID: string
+  onSwipeLeft?: () => Promise<void>;
+  onSwipeRight?: () => Promise<void>;
 }
 
-export const SwipeableItem: React.FC<SwipeableItemProps> = ({ children, onSwipeLeft, onSwipeRight, objectID }) => {
+export const SwipeableItem: React.FC<SwipeableItemProps> = ({ children, onSwipeLeft, onSwipeRight }) => {
   const [isSwipeOut, setIsSwipeOut] = useState(false);
+  const swipeableRef = useRef<Swipeable>(null)
+
   const handleSwipeableOpen = (direction: 'left' | 'right') => {
     setIsSwipeOut(true);
-    const action = direction === 'left' ? onSwipeRight : onSwipeLeft;
-    if (action) action(objectID);
+    if (direction === 'right' && onSwipeLeft && swipeableRef.current) {
+      router.push('/screens/loader')
+      onSwipeLeft()
+      swipeableRef.current.close();
+    } else if (direction === 'left' && onSwipeRight && swipeableRef.current) {
+      router.push('/screens/loader')
+      onSwipeRight()
+      swipeableRef.current.close();
+    }
   };
 
   return (
     <GestureHandlerRootView>
       <Swipeable
+        ref={swipeableRef}
         renderRightActions={onSwipeLeft && (() => <SwipeAction color='#a81212b4' isSwipeOut={isSwipeOut} />)}
         renderLeftActions={onSwipeRight && (() => <SwipeAction color='#bfff0094' isSwipeOut={isSwipeOut} />)}
-        onSwipeableOpen={handleSwipeableOpen}
+        onSwipeableOpen={(direction) => handleSwipeableOpen(direction)}
+        onSwipeableWillOpen={() => setIsSwipeOut(true)}
         overshootRight={false}
         overshootLeft={false}
         friction={0.1}  // soft swipe

@@ -7,13 +7,14 @@ import { Ionicons } from "@expo/vector-icons";
 
 const optionsHeaderIos: NativeStackNavigationOptions = {
     headerBlurEffect: "regular",
-    headerTitle: "Mobile News",
+    headerTitle: "MOBILE NEWS",
+    headerTitleStyle: { fontWeight: "bold" },
     headerTitleAlign: "center",
     headerTransparent: true,
     headerLargeTitle: true,
     headerLargeTitleShadowVisible: false,
     headerTintColor: '#ffffff',
-    headerRight: () => <Link href={{ pathname: "/screens/settings" }} asChild><Ionicons size={32} name='settings' color='#FFF' /></Link>
+    headerRight: () => <Link href="/screens/settings" asChild><Ionicons size={32} name='settings' color='#FFF' /></Link>
 }
 const RootLayout: React.FC = () => (
 
@@ -35,6 +36,10 @@ const RootLayout: React.FC = () => (
             <Stack.Screen
                 name="screens/settings/index"
                 options={{ ...optionsHeaderIos, headerTitle: 'Settings', headerRight: () => null }}
+            />
+            <Stack.Screen
+                name="screens/loader/index"
+                options={{ ...optionsHeaderIos, headerRight: () => null }}
             />
         </Stack>
     </AppProviders>

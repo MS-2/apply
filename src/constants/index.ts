@@ -1,9 +1,9 @@
-export const ITEM_HEIGHT = 80; // height per article
+export const ITEM_HEIGHT = 255; // height per article
 export const INITIAL_NUM_TO_RENDER = 20;
 export const WINDOW_SIZE = 10;
 export const STALE_TIME = 1000 * 60 * 5; // 5 minutos
-export const RETRY = 2;
-export const REFETCH_INTERVAL = 1000 * 60 * 10; // Refetch every  10 min
+export const RETRY = 4;
+export const REFETCH_INTERVAL = 1000 * 60 * 1; // Refetch every  10 min
 export const searchTerms = [
   "AI",
   "machine learning",
@@ -412,4 +412,5 @@ export const searchTerms = [
   "privacy",
   "rights",
   "debate",
+  "Linux Pipes Are Slow",
 ];
