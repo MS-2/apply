@@ -1,10 +1,5 @@
-import * as SQLite from "expo-sqlite";
+import { openDatabase } from "@/data/setupDatabase";
 
-export const openDatabase = async () => {
-  return SQLite.openDatabaseAsync("test.db");
-};
-
-// Utilidad para ejecutar consultas SQL
 export const executeQuery = async <T>(
   query: string,
   params: any[] = []

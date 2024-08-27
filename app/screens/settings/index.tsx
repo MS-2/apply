@@ -4,7 +4,7 @@ import { Button, Switch, Text, Dialog, Portal, Paragraph, Snackbar } from 'react
 import { ScreenWrapper } from "@/components/ScreensWrapper";
 import { useUserPreferencesContext } from "@/providers/UserPreferences";
 import { useNotifications } from "@/providers/NotificationProvider";
-import { clearAllLocalData, countRecordsInTables } from "@/data/settings";
+import { clearAllLocalData } from "@/data/settings";
 
 const Settings: React.FC = () => {
     const { selectedPreferences, togglePreference, theme, setTheme } = useUserPreferencesContext();
@@ -27,7 +27,6 @@ const Settings: React.FC = () => {
             showSnackbar("Error clearing local data");
         }
     };
-
 
     return (
         <ScreenWrapper>
@@ -64,9 +63,6 @@ const Settings: React.FC = () => {
                 <Button mode="outlined" onPress={toggleDialog} style={styles.button}>
                     Delete Local Data
                 </Button>
-                {/* <Button mode="outlined" onPress={countLocalData} style={styles.button}>
-                    Count Local Data
-                </Button> */}
 
                 <Snackbar
                     visible={snackbar.visible}

@@ -1,4 +1,4 @@
-export const ITEM_HEIGHT = 255; // height per article
+export const ITEM_HEIGHT = 250; // height per article
 export const INITIAL_NUM_TO_RENDER = 10;
 export const WINDOW_SIZE = 10;
 export const STALE_TIME = 1000 * 60 * 5; // 5 minutos

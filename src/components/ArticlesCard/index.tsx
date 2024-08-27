@@ -1,7 +1,7 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Link } from "expo-router";
-import { SwipeableItem } from "@/components/SwipeableItem";
+import { SwipeableItem } from "@/components/SwipeableItem/SwipeableItem";
 import { Hit } from "@/types/algoliaResponse";
 import * as Animatable from "react-native-animatable";
 import { Card, Title, IconButton, Subheading } from "react-native-paper";

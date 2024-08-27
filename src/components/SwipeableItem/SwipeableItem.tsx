@@ -1,6 +1,6 @@
 import React, { ReactNode, useRef, useState } from 'react';
 import { Swipeable, GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SwipeAction } from './SwipeAction';
+import { SwipeAction } from '../SwipeAction';
 import { router } from 'expo-router';
 
 type SwipeableItemProps = {

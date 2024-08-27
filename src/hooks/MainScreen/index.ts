@@ -4,8 +4,10 @@ import { useFocusEffect } from "expo-router";
 import { Hit } from "@/types/algoliaResponse";
 import { getHits, addToFavorites, addToDeletes } from "@/hooks/MainScreen/data";
 import { fetchData } from "@/api/fetchAlgoliaData";
+import { useUserPreferencesContext } from "@/providers/UserPreferences";
 
-export const useMainScreen = (selectedPreferences: string[]) => {
+export const useMainScreen = () => {
+  const { selectedPreferences } = useUserPreferencesContext();
   const [hits, setHits] = useState<Hit[]>([]);
 
   // React Query logic for fetching data

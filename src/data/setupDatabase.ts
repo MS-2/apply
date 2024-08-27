@@ -1,7 +1,11 @@
 import * as SQLite from "expo-sqlite";
 
+export const openDatabase = async () => {
+  return SQLite.openDatabaseAsync("test.db");
+};
+
 export const setupDatabase = async () => {
-  const db = await SQLite.openDatabaseAsync("test.db");
+  const db = await openDatabase();
 
   await db.execAsync(`
     PRAGMA journal_mode = WAL;
@@ -44,20 +48,6 @@ export const setupDatabase = async () => {
     story_id TEXT,
     story_title TEXT,
     story_url TEXT,
-  );
-  `);
-
-  await db.execAsync(`
-  PRAGMA journal_mode = WAL;
-  CREATE TABLE IF NOT EXISTS deletedHits (
-    objectID TEXT PRIMARY KEY NOT NULL
-  );
-  `);
-
-  await db.execAsync(`
-  PRAGMA journal_mode = WAL;
-  CREATE TABLE IF NOT EXISTS favoriteHits (
-    objectID TEXT PRIMARY KEY NOT NULL
   );
   `);
 };

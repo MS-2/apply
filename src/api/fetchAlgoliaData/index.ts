@@ -1,6 +1,7 @@
 import { saveHits } from "@/hooks/MainScreen/data";
 import { Hit, AlgoliaResponse } from "@/types/algoliaResponse";
-import { sanitizeResponse, sendNotification } from "@/utils/utilitys";
+import { sendNotification } from "@/utils/notifications/sendNotification";
+import { sanitizeResponse } from "@/utils/utilitys";
 import { ALGOLIA_API_URL } from "..";
 
 export const fetchData = async (

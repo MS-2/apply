@@ -1,5 +1,5 @@
-import { executeCommand, executeQuery } from "@/data/db";
 import { Hit } from "@/types/algoliaResponse";
+import { executeCommand, executeQuery } from "@/utils/sql_util";
 
 // SQL queries as constants
 const DELETE_FROM_DELETED = `DELETE FROM deleted WHERE objectID = ?`;

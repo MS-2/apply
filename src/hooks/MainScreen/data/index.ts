@@ -1,5 +1,5 @@
+import { openDatabase } from "@/data/setupDatabase";
 import { Hit } from "@/types/algoliaResponse";
-import { openDatabase } from "../../../data/db";
 
 // SQL Queries as constants
 const SQL_INSERT_HIT = `INSERT or REPLACE INTO hits (id, objectID, author, created_at, created_at_i, parent_id, story_id, story_title, story_url, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;

@@ -1,9 +1,10 @@
 import React from "react";
 import { WebView } from 'react-native-webview';
 import { useLocalSearchParams } from 'expo-router';
-import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { HighlightResult } from "@/types/algoliaResponse";
 import { ScreenWrapper } from "@/components/ScreensWrapper";
+import { ActivityIndicator } from "react-native-paper";
 const WebViewScreen = () => {
     const { value } = useLocalSearchParams<HighlightResult>();
 
@@ -24,7 +25,7 @@ const WebViewScreen = () => {
                 startInLoadingState
                 renderLoading={() => (
                     <View style={styles.loadingContainer}>
-                        <ActivityIndicator size="large" color="#0000ff" />
+                        <ActivityIndicator animating size="large" />
                     </View>
                 )}
                 renderError={(errorName) => (
