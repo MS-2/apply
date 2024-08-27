@@ -3,19 +3,7 @@ import { Hit } from "@/types/algoliaResponse";
 import { Linking } from "react-native";
 import { filterHitsByPreferences } from "../utilitys";
 
-export const sanitizeResponse = (hits: Hit[]) => {
-  const seenStoryTitles = new Set<string>();
-  return hits.filter((hit) => {
-    const normalizedTitle = hit.story_title?.trim().toLowerCase();
-    if (normalizedTitle && !seenStoryTitles.has(normalizedTitle)) {
-      seenStoryTitles.add(normalizedTitle);
-      return true;
-    }
-    return false;
-  });
-};
-
-type SendNotificationParams = {
+export type SendNotificationParams = {
   hits: Hit[];
   selectedPreferences: string[];
 };
@@ -49,11 +37,9 @@ export const sendNotification = async ({
     console.error("Error sending notification:", error);
   }
 };
-// Listener para manejar la respuesta a la notificación
 Notifications.addNotificationResponseReceivedListener((response) => {
   const url = response.notification.request.content.data?.url;
-
   if (url) {
-    Linking.openURL(url); // Abre la URL cuando se hace clic en la notificación
+    Linking.openURL(url);
   }
 });
