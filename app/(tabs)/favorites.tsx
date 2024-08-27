@@ -1,30 +1,15 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { FlatList } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { ArticleCard } from '../../src/components/ArticlesCard';
 import { ITEM_HEIGHT, INITIAL_NUM_TO_RENDER, WINDOW_SIZE } from '@/utils/constants';
 import { ScreenWrapper } from '@/components/ScreensWrapper';
 import { ActivityIndicator } from 'react-native-paper';
-import { getFavorites, removeFromFavorite } from '@/hooks/FavoritesScreen/data';
-import { Hit } from '@/types/algoliaResponse';
 import { ConnectionBanner } from '@/components/ConnextionBanner.tsx';
-import { onlineManager } from '@tanstack/react-query';
+import { useFavorites } from '@/hooks/FavoritesScreen';
 
 const FavoritesScreen: React.FC = () => {
-  const [favorites, setFavorites] = useState<Hit[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-
-  const fetchFavorites = useCallback(async () => {
-    try {
-      const favoriteIDs = await getFavorites();
-      setFavorites(favoriteIDs);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const { favorites, loading, error, fetchFavorites, removeFromFavorite, isOnline } = useFavorites();
 
   useFocusEffect(
     useCallback(() => {
@@ -42,7 +27,9 @@ const FavoritesScreen: React.FC = () => {
 
   return (
     <ScreenWrapper>
-      {error && <ConnectionBanner online={onlineManager.isOnline()} />}
+      {error && !isOnline && (
+        <ConnectionBanner online={isOnline} />
+      )}
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         data={favorites}

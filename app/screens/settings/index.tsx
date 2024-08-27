@@ -5,9 +5,10 @@ import { ScreenWrapper } from "@/components/ScreensWrapper";
 import { useUserPreferencesContext } from "@/providers/UserPreferences";
 import { useNotifications } from "@/providers/NotificationProvider";
 import { useSettings } from "@/hooks/SettingsScreen";
+import { searchTerms } from "@/utils/constants";
 
 const Settings: React.FC = () => {
-    const { selectedPreferences, togglePreference, theme, setTheme } = useUserPreferencesContext();
+    const { selectedPreferences, togglePreference, theme, setTheme, setSelectedPreferences } = useUserPreferencesContext();
     const { notification, setNotification } = useNotifications();
     const {
         visible,
@@ -24,13 +25,12 @@ const Settings: React.FC = () => {
     };
 
     const handleToggleTheme = () => setTheme(theme === 'vene' ? 'default' : 'vene');
-
     return (
         <ScreenWrapper>
             <View style={styles.container}>
                 {[
                     { label: "Android Notifications", pref: "android" },
-                    { label: "iOS Notifications", pref: "ios" }
+                    { label: "iOS Notifications", pref: "ios" },
                 ].map(({ label, pref }) => (
                     <View key={pref} style={styles.toggleContainer}>
                         <Text style={styles.label}>{label}</Text>
@@ -49,6 +49,20 @@ const Settings: React.FC = () => {
                         style={styles.toggle}
                     />
                 </View>
+                <View style={styles.toggleContainer}>
+
+                    <Paragraph style={{ width: 250 }}>Insert a long list of preferences to increase the chance of matching with the API (notifications are enabled by default when this swich is on)</Paragraph>
+                    <Switch
+                        value={selectedPreferences.length > 0}
+                        onValueChange={() =>
+                            selectedPreferences.length === 0
+                                ? setSelectedPreferences(searchTerms)
+                                : setSelectedPreferences([])
+                        }
+                        style={styles.toggle}
+                    />
+                </View>
+
                 <View style={styles.toggleContainer}>
                     <Text style={styles.label}>Tricolor Theme</Text>
                     <Switch
@@ -83,7 +97,7 @@ const Settings: React.FC = () => {
                     </Dialog>
                 </Portal>
             </View>
-        </ScreenWrapper>
+        </ScreenWrapper >
     );
 };
 

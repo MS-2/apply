@@ -8,6 +8,7 @@ type UserPreferencesContextType = {
     togglePreference: (preference: string) => void;
     theme: string;
     setTheme: (theme: string) => void;
+    setSelectedPreferences: (pref: string[]) => void;
 };
 
 const UserPreferencesContext = createContext<UserPreferencesContextType>({
@@ -15,6 +16,7 @@ const UserPreferencesContext = createContext<UserPreferencesContextType>({
     togglePreference: () => { },
     theme: "",
     setTheme: () => { },
+    setSelectedPreferences: (pref: string[]) => { }
 });
 
 export const UserPreferencesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -73,7 +75,7 @@ export const UserPreferencesProvider: React.FC<{ children: ReactNode }> = ({ chi
 
     return (
         <UserPreferencesContext.Provider
-            value={{ selectedPreferences, togglePreference, theme, setTheme: handleSetTheme }}
+            value={{ selectedPreferences, togglePreference, theme, setTheme: handleSetTheme, setSelectedPreferences }}
         >
             <PaperProvider theme={theme === 'vene' ? venezuelanTheme : lightTheme}>
                 {children}

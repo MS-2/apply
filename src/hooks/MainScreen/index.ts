@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { onlineManager, useQuery } from "@tanstack/react-query";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { Hit } from "@/types/algoliaResponse";
 import { getHits, addToFavorites, addToDeletes } from "@/hooks/MainScreen/data";
 import { fetchData } from "@/api/fetchAlgoliaData";
@@ -9,21 +9,23 @@ import { useUserPreferencesContext } from "@/providers/UserPreferences";
 export const useMainScreen = () => {
   const { selectedPreferences } = useUserPreferencesContext();
   const [hits, setHits] = useState<Hit[]>([]);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // React Query logic for fetching data
   const { error, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ["feed"],
     queryFn: () => fetchData(1, selectedPreferences),
   });
 
-  // Effect to fetch hits from local storage when screen gains focus
   useFocusEffect(
     useCallback(() => {
       const setData = async () => {
         try {
           const hits = await getHits();
-          console.log("hits : ", hits.length);
           setHits(hits);
+          if (isInitialLoad && hits.length === 0) {
+            setIsInitialLoad(false); // Prevent refetch loop
+            router.push("/screens/loader");
+          }
         } catch (error) {
           console.error("Error fetching hits:", error);
         }

@@ -20,7 +20,7 @@ const RootLayout: React.FC = () => (
 
     <AppProviders>
         <StatusBar style="auto" />
-        <Stack initialRouteName="(tabs)">
+        <Stack initialRouteName="(tabs)" screenOptions={{ animation: 'none' }}>
             <Stack.Screen
                 name="(tabs)"
                 options={optionsHeaderIos}
@@ -39,7 +39,7 @@ const RootLayout: React.FC = () => (
             />
             <Stack.Screen
                 name="screens/loader/index"
-                options={{ ...optionsHeaderIos, headerRight: () => null }}
+                options={{ ...optionsHeaderIos, animation: 'none', headerRight: () => null }}
             />
         </Stack>
     </AppProviders>

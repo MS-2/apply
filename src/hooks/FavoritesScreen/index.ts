@@ -1,35 +1,39 @@
-// src/hooks/useFavorites.ts
-
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { Hit } from "@/types/algoliaResponse";
-import { getFavorites } from "@/hooks/FavoritesScreen/data";
+import { getFavorites, removeFromFavorite } from "@/hooks/FavoritesScreen/data";
+import { onlineManager } from "@tanstack/react-query";
 
 type UseFavoritesReturn = {
   favorites: Hit[];
   loading: boolean;
-  error: string | null;
-  fetchFavorites: () => Promise<void>; // Agregado
+  error: boolean;
+  fetchFavorites: () => Promise<void>;
+  removeFromFavorite: (objectID: string) => Promise<void>;
+  isOnline: boolean;
 };
 
 export const useFavorites = (): UseFavoritesReturn => {
   const [favorites, setFavorites] = useState<Hit[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<boolean>(false);
 
   const fetchFavorites = useCallback(async () => {
     try {
       const favoriteIDs = await getFavorites();
       setFavorites(favoriteIDs);
     } catch (error) {
-      setError("Failed to load favorites");
+      setError(true);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => {
-    fetchFavorites();
-  }, [fetchFavorites]);
-
-  return { favorites, loading, error, fetchFavorites }; // Incluye fetchFavorites en el retorno
+  return {
+    favorites,
+    loading,
+    error,
+    fetchFavorites,
+    removeFromFavorite,
+    isOnline: onlineManager.isOnline(),
+  };
 };

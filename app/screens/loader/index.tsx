@@ -8,7 +8,7 @@ const LoadingScreen: React.FC = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             navigation.goBack();
-        }, 100);
+        }, 300);
         return () => clearTimeout(timer);
     }, [navigation]);
 

@@ -10,7 +10,6 @@ import { ITEM_HEIGHT } from "@/utils/constants";
 
 const MainScreen: React.FC = () => {
   const {
-    error,
     handleSwipeLeft,
     handleSwipeRight,
     hits,
@@ -30,12 +29,12 @@ const MainScreen: React.FC = () => {
 
   return (
     <ScreenWrapper>
-      {error && !online && <ConnectionBanner online={online} />}
+      {!online && <ConnectionBanner online={online} />}
       <FlashList
         contentInsetAdjustmentBehavior="automatic"
         data={hits}
         estimatedItemSize={ITEM_HEIGHT}
-        keyExtractor={({ id }) => id.toString()}
+        keyExtractor={({ id, objectID, created_at_i }) => `${id}${objectID}${created_at_i}`}
         refreshControl={
           <RefreshControl refreshing={isRefetching} onRefresh={refetch} />
         }
