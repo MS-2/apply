@@ -10,7 +10,7 @@ import { useAppState } from '@/hooks/useAppState';
 import { setupDatabase } from '@/data/setupDatabase';
 import { Text } from 'react-native'
 import { UserPreferencesProvider } from '@/providers/UserPreferences';
-import { REFETCH_INTERVAL, RETRY, STALE_TIME } from '@/constants';
+import { REFETCH_INTERVAL, RETRY, STALE_TIME } from '@/utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from "expo-notifications";
 

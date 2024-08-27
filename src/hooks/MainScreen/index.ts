@@ -20,6 +20,7 @@ export const useMainScreen = (selectedPreferences: string[]) => {
       const setData = async () => {
         try {
           const hits = await getHits();
+          console.log("hits : ", hits.length);
           setHits(hits);
         } catch (error) {
           console.error("Error fetching hits:", error);

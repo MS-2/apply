@@ -1,7 +1,7 @@
 import React from "react";
 import { RefreshControl } from "react-native";
 import { ArticleCard } from '../../src/components/ArticlesCard';
-import { ITEM_HEIGHT } from "@/constants";
+import { ITEM_HEIGHT } from "@/utils/constants";
 import { ScreenWrapper } from "@/components/ScreensWrapper";
 import { ActivityIndicator } from "react-native-paper";
 import { ConnectionBanner } from "@/components/ConnextionBanner.tsx";

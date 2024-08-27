@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
-import { registerForPushNotificationsAsync } from "@/modules/notifications";
+import { registerForPushNotificationsAsync } from "@/utils/notifications";
 
 const NotificationContext = createContext({} as any);
 

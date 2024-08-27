@@ -67,14 +67,9 @@ const styles = StyleSheet.create({
     },
     headerContainer: {
         flexDirection: "row",
-        alignItems: "center",
-        marginTop: 10,
+        alignItems: "center"
     },
     subheading: {
         color: "#666",
-    },
-    paragraph: {
-        color: "#666",
-        marginLeft: 20,
     },
 });
