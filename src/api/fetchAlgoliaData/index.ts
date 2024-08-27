@@ -1,9 +1,9 @@
-import { saveHits } from "@/data/main";
-import { useUserPreferencesContext } from "@/providers/UserPreferences";
+import { saveHits } from "@/hooks/MainScreen/data";
 import { Hit, AlgoliaResponse } from "@/types/algoliaResponse";
 import { sanitizeResponse, sendNotification } from "@/utils/utilitys";
 import { ALGOLIA_API_URL } from "..";
 import { searchTerms } from "@/constants";
+
 export const fetchData = async (
   totalPages: number = 1,
   userPreferences: string[]
@@ -32,12 +32,10 @@ export const fetchData = async (
     }
     const posts = allPosts.flatMap((posts) => posts);
     const sanitizedPosts = sanitizeResponse(posts);
-    console.log("before ");
     await sendNotification({
       hits: sanitizedPosts,
       selectedPreferences: userPreferences,
     });
-    console.log("sanit :", sanitizedPosts.length);
     saveHits(sanitizedPosts);
     return sanitizedPosts;
   } catch (error) {

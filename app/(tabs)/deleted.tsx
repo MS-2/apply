@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from "react";
 import { FlatList, Text } from "react-native";
-import { ArticleList } from "@/components/ArticleList";
+import { ArticleCard } from "@/components/ArticlesCard";
 import { INITIAL_NUM_TO_RENDER, ITEM_HEIGHT, WINDOW_SIZE } from "@/constants";
 import { useFocusEffect } from "expo-router";
 import { removeFromDeleted } from "@/data/deleted";
 import { ScreenWrapper } from "@/components/ScreensWrapper";
 import { onlineManager } from "@tanstack/react-query";
-import { ConnectionBanner } from "@/components/ConnectionBanner";
+import { ConnectionBanner } from "@/components/ConnextionBanner.tsx";
 import { Hit } from "@/types/algoliaResponse";
 import { openDatabase } from "@/data/db";
 
@@ -61,7 +61,7 @@ const DeletedScreen: React.FC = () => {
         data={deletes}
         keyExtractor={({ objectID }) => objectID}
         renderItem={({ item, index }) =>
-          <ArticleList
+          <ArticleCard
             index={index}
             {...item}
             onSwipeRight={() => removeFromDeleted(item.objectID)}

@@ -2,8 +2,8 @@ export const ITEM_HEIGHT = 255; // height per article
 export const INITIAL_NUM_TO_RENDER = 20;
 export const WINDOW_SIZE = 10;
 export const STALE_TIME = 1000 * 60 * 5; // 5 minutos
-export const RETRY = 4;
-export const REFETCH_INTERVAL = 1000 * 60 * 1; // Refetch every  10 min
+export const RETRY = 3;
+export const REFETCH_INTERVAL = 1000 * 60 * 2; // Refetch every  2 min
 export const searchTerms = [
   "AI",
   "machine learning",

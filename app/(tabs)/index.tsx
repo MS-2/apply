@@ -1,16 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import { RefreshControl } from "react-native";
-import { ArticleList } from '../../src/components/ArticleList';
+import { ArticleCard } from '../../src/components/ArticlesCard';
 import { ITEM_HEIGHT } from "@/constants";
-import { onlineManager, useQuery } from "@tanstack/react-query";
 import { ScreenWrapper } from "@/components/ScreensWrapper";
-import { useFocusEffect } from "expo-router";
 import { ActivityIndicator } from "react-native-paper";
-import { ConnectionBanner } from "@/components/ConnectionBanner";
+import { ConnectionBanner } from "@/components/ConnextionBanner.tsx";
 import { FlashList } from "@shopify/flash-list";
-import { Hit } from "@/types/algoliaResponse";
-import { getHits, addToFavorites, addToDeletes } from "@/data/main";
-import { fetchData } from "@/api/fetchAlgoliaData";
 import { useMainScreen } from "@/hooks/MainScreen";
 import { useUserPreferencesContext } from "@/providers/UserPreferences";
 
@@ -44,7 +39,7 @@ const MainScreen: React.FC = () => {
         data={hits}
         keyExtractor={({ id }) => id.toString()}
         renderItem={({ item, index }) => (
-          <ArticleList
+          <ArticleCard
             index={index}
             {...item}
             onSwipeRight={() => handleSwipeRight(item)}

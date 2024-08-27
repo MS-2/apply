@@ -1,59 +1,54 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { FlatList, Text } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
-import { ArticleList } from "../../src/components/ArticleList";
-import { ITEM_HEIGHT, INITIAL_NUM_TO_RENDER, WINDOW_SIZE } from "@/constants";
-import { removeFromFavorite } from "@/data/favorites";
-import { ScreenWrapper } from "@/components/ScreensWrapper";
-import { Hit } from "@/types/algoliaResponse";
-import { openDatabase } from "@/data/db";
+import React, { useCallback, useState } from 'react';
+import { FlatList } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { ArticleCard } from '../../src/components/ArticlesCard';
+import { ITEM_HEIGHT, INITIAL_NUM_TO_RENDER, WINDOW_SIZE } from '@/constants';
+import { ScreenWrapper } from '@/components/ScreensWrapper';
+import { ActivityIndicator } from 'react-native-paper';
+import { getFavorites, removeFromFavorite } from '@/hooks/FavoritesScreen/data';
+import { Hit } from '@/types/algoliaResponse';
+import { ConnectionBanner } from '@/components/ConnextionBanner.tsx';
+import { onlineManager } from '@tanstack/react-query';
 
-
-export const getFavorites = async (): Promise<Hit[]> => {
-  const db = await openDatabase();
-  const hits = await db.getAllAsync<Hit>("SELECT * from favorites");
-  return hits;
-};
 const FavoritesScreen: React.FC = () => {
   const [favorites, setFavorites] = useState<Hit[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<boolean>(false);
+
+  const fetchFavorites = useCallback(async () => {
+    try {
+      const favoriteIDs = await getFavorites();
+      setFavorites(favoriteIDs);
+    } catch (error) {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
-      const fetchFavorites = async () => {
-        try {
-          const favoriteIDs = await getFavorites();
-          console.log('favoriteIDs : ', favoriteIDs.length)
-          setFavorites(favoriteIDs);
-        } catch (error) {
-          setError('Failed to load favorites');
-        } finally {
-          setLoading(false);
-        }
-      };
-
       fetchFavorites();
-    }, [])
+    }, [fetchFavorites])
   );
 
-
-
   if (loading) {
-    return <Text>Loading...</Text>;
-  }
-
-  if (error) {
-    return <Text>{error}</Text>;
+    return (
+      <ScreenWrapper>
+        <ActivityIndicator animating size="large" />
+      </ScreenWrapper>
+    );
   }
 
   return (
     <ScreenWrapper>
+      {error && <ConnectionBanner online={onlineManager.isOnline()} />}
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         data={favorites}
         keyExtractor={({ objectID }) => objectID}
         renderItem={({ item, index }) => (
-          <ArticleList
+          <ArticleCard
             index={index}
             {...item}
             onSwipeLeft={() => removeFromFavorite(item.objectID)}

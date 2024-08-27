@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { onlineManager, useQuery } from "@tanstack/react-query";
 import { useFocusEffect } from "expo-router";
 import { Hit } from "@/types/algoliaResponse";
-import { getHits, addToFavorites, addToDeletes } from "@/data/main";
+import { getHits, addToFavorites, addToDeletes } from "@/hooks/MainScreen/data";
 import { fetchData } from "@/api/fetchAlgoliaData";
 
 export const useMainScreen = (selectedPreferences: string[]) => {
@@ -11,7 +11,7 @@ export const useMainScreen = (selectedPreferences: string[]) => {
   // React Query logic for fetching data
   const { error, isLoading, refetch, isRefetching } = useQuery({
     queryKey: ["feed"],
-    queryFn: () => fetchData(2, selectedPreferences),
+    queryFn: () => fetchData(1, selectedPreferences),
   });
 
   // Effect to fetch hits from local storage when screen gains focus
@@ -20,7 +20,6 @@ export const useMainScreen = (selectedPreferences: string[]) => {
       const setData = async () => {
         try {
           const hits = await getHits();
-          console.log("hits : ", hits.length);
           setHits(hits);
         } catch (error) {
           console.error("Error fetching hits:", error);
