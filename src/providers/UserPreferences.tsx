@@ -1,32 +1,35 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { lightThemeColors, PREFERENCES_KEY, THEME_KEY, venezuelanThemeColors } from "@/utils/constants";
 import { PaperProvider } from "react-native-paper";
-import { lightTheme, venezuelanTheme } from "@/themes";
 
 type UserPreferencesContextType = {
     selectedPreferences: string[];
     togglePreference: (preference: string) => void;
-    theme: string;
-    setTheme: (theme: string) => void;
-    setSelectedPreferences: (pref: string[]) => void;
+    themeColors: typeof lightThemeColors;
+    toggleTheme: () => void;
+    isLightTheme: boolean
 };
 
 const UserPreferencesContext = createContext<UserPreferencesContextType>({
     selectedPreferences: [],
     togglePreference: () => { },
-    theme: "",
-    setTheme: () => { },
-    setSelectedPreferences: (pref: string[]) => { }
+    themeColors: {
+        screenBackgroundGradient: ["#FFFFFF", "#bb86fc", "#bb86fc"],
+        tabsBackgroundGradient: ["#FFFFFF", "#bb86fc", "#bb86fc"],
+        primary: "#FFFFFF",
+        secondary: "#bb86fc",
+        danger: "#bb86fc",
+        fill: "#03dac4",
+    },
+    toggleTheme: () => { },
+    isLightTheme: true
 });
 
 export const UserPreferencesProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    const [isLightTheme, setIsLightTheme] = useState<boolean>(true);
+    const themeColors = isLightTheme ? lightThemeColors : venezuelanThemeColors;
     const [selectedPreferences, setSelectedPreferences] = useState<string[]>([]);
-    const [theme, setTheme] = useState<string>("default");
-
-    // Claves para AsyncStorage
-    const PREFERENCES_KEY = "user_preferences";
-    const THEME_KEY = "user_theme";
-
     // Cargar preferencias y tema desde AsyncStorage
     const loadPreferences = async () => {
         try {
@@ -34,10 +37,9 @@ export const UserPreferencesProvider: React.FC<{ children: ReactNode }> = ({ chi
             if (storedPreferences) {
                 setSelectedPreferences(JSON.parse(storedPreferences));
             }
-
             const storedTheme = await AsyncStorage.getItem(THEME_KEY);
-            if (storedTheme) {
-                setTheme(storedTheme);
+            if (storedTheme !== null) {
+                setIsLightTheme(JSON.parse(storedTheme)); // Convertir a booleano
             }
         } catch (error) {
             console.error("Error loading preferences:", error);
@@ -59,13 +61,15 @@ export const UserPreferencesProvider: React.FC<{ children: ReactNode }> = ({ chi
         }
     };
 
-    // Guardar el tema en AsyncStorage
-    const handleSetTheme = async (newTheme: string) => {
-        setTheme(newTheme);
+    const toggleTheme = () => {
         try {
-            await AsyncStorage.setItem(THEME_KEY, newTheme);
+            setIsLightTheme((prev) => {
+                const newTheme = !prev;
+                AsyncStorage.setItem(THEME_KEY, JSON.stringify(newTheme));
+                return newTheme;
+            });
         } catch (error) {
-            console.error("Error saving theme:", error);
+            console.error("Error storing theme preference:", error);
         }
     };
 
@@ -75,9 +79,11 @@ export const UserPreferencesProvider: React.FC<{ children: ReactNode }> = ({ chi
 
     return (
         <UserPreferencesContext.Provider
-            value={{ selectedPreferences, togglePreference, theme, setTheme: handleSetTheme, setSelectedPreferences }}
+            value={{
+                selectedPreferences, togglePreference, themeColors, toggleTheme, isLightTheme
+            }}
         >
-            <PaperProvider theme={theme === 'vene' ? venezuelanTheme : lightTheme}>
+            <PaperProvider theme={{ dark: false }}>
                 {children}
             </PaperProvider>
         </UserPreferencesContext.Provider>

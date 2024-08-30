@@ -10,9 +10,10 @@ export const fetchData = async (
 ) => {
   const allPosts: Hit[][] = [];
   try {
+    const query = userPreferences.length ? userPreferences.join(" OR ") : "";
     for (let page = totalPages; page < totalPages + totalPages; page++) {
       const response = await fetch(
-        `${ALGOLIA_API_URL}?query=mobile&page=${page}`
+        `${ALGOLIA_API_URL}?query=${encodeURIComponent(query)}&page=${page}`
       );
 
       if (!response.ok) {

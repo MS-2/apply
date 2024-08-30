@@ -3,10 +3,10 @@ import { Tabs } from "expo-router";
 import { StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { TabBarIcon } from "../../src/components/TabBarIcon";
-import { useTheme } from "react-native-paper";
+import { useUserPreferencesContext } from "@/providers/UserPreferences";
 
 const TabLayout: React.FC = () => {
-  const { colors } = useTheme()
+  const { themeColors } = useUserPreferencesContext();
   return (
     <Tabs
       screenOptions={{
@@ -16,7 +16,7 @@ const TabLayout: React.FC = () => {
         tabBarLabelStyle: styles.tabBarLabel,
         tabBarBackground: () => (
           <LinearGradient
-            colors={[colors.primary, colors.secondary, colors.tertiary]}
+            colors={themeColors.tabsBackgroundGradient}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={StyleSheet.absoluteFill}
@@ -29,7 +29,7 @@ const TabLayout: React.FC = () => {
         name="deleted"
         options={{
           title: "Deleted",
-          tabBarActiveTintColor: colors.error,
+          tabBarActiveTintColor: themeColors.danger,
           tabBarIcon: ({ color }) => (
             <TabBarIcon name='trash' color={color} />
           ),
@@ -52,7 +52,7 @@ const TabLayout: React.FC = () => {
         name="favorites"
         options={{
           title: "Favorites",
-          tabBarActiveTintColor: colors.primary,
+          tabBarActiveTintColor: themeColors.primary,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? "star" : "star-outline"}

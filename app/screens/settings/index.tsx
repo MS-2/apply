@@ -5,10 +5,9 @@ import { ScreenWrapper } from "@/components/ScreensWrapper";
 import { useUserPreferencesContext } from "@/providers/UserPreferences";
 import { useNotifications } from "@/providers/NotificationProvider";
 import { useSettings } from "@/hooks/SettingsScreen";
-import { searchTerms } from "@/utils/constants";
 
 const Settings: React.FC = () => {
-    const { selectedPreferences, togglePreference, theme, setTheme, setSelectedPreferences } = useUserPreferencesContext();
+    const { selectedPreferences, togglePreference, toggleTheme, isLightTheme } = useUserPreferencesContext();
     const { notification, setNotification } = useNotifications();
     const {
         visible,
@@ -24,7 +23,6 @@ const Settings: React.FC = () => {
         showSnackbar(notification ? `Notifications Turned On!` : `Notifications Turned Off!`);
     };
 
-    const handleToggleTheme = () => setTheme(theme === 'vene' ? 'default' : 'vene');
     return (
         <ScreenWrapper>
             <View style={styles.container}>
@@ -50,24 +48,10 @@ const Settings: React.FC = () => {
                     />
                 </View>
                 <View style={styles.toggleContainer}>
-
-                    <Paragraph style={{ width: 250 }}>Insert a long list of preferences to increase the chance of matching with the API (notifications are enabled by default when this swich is on)</Paragraph>
-                    <Switch
-                        value={selectedPreferences.length > 0}
-                        onValueChange={() =>
-                            selectedPreferences.length === 0
-                                ? setSelectedPreferences(searchTerms)
-                                : setSelectedPreferences([])
-                        }
-                        style={styles.toggle}
-                    />
-                </View>
-
-                <View style={styles.toggleContainer}>
                     <Text style={styles.label}>Tricolor Theme</Text>
                     <Switch
-                        value={theme === 'vene'}
-                        onValueChange={handleToggleTheme}
+                        value={isLightTheme}
+                        onValueChange={toggleTheme}
                         style={styles.toggle}
                     />
                 </View>
