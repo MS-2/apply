@@ -7,6 +7,7 @@ import { fetchData } from "@/api/fetchAlgoliaData";
 import { useUserPreferencesContext } from "@/providers/UserPreferences";
 
 export const useMainScreen = () => {
+  const isOnline = onlineManager.isOnline();
   const { selectedPreferences } = useUserPreferencesContext();
   const [hits, setHits] = useState<Hit[]>([]);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -22,9 +23,11 @@ export const useMainScreen = () => {
         try {
           const hits = await getHits();
           setHits(hits);
-          if (isInitialLoad && hits.length === 0) {
+          if (isInitialLoad && hits.length === 0 && isOnline) {
             setIsInitialLoad(false); // Prevent refetch loop
             router.push("/screens/loader");
+          } else if (!isOnline && hits.length === 0) {
+            router.push("/screens/error");
           }
         } catch (error) {
           console.error("Error fetching hits:", error);
@@ -44,7 +47,7 @@ export const useMainScreen = () => {
     isLoading,
     refetch,
     isRefetching,
-    online: onlineManager.isOnline(),
+    online: isOnline,
     handleSwipeRight,
     handleSwipeLeft,
   };

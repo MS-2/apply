@@ -50,7 +50,7 @@ const Settings: React.FC = () => {
                 <View style={styles.toggleContainer}>
                     <Text style={styles.label}>Tricolor Theme</Text>
                     <Switch
-                        value={isLightTheme}
+                        value={!isLightTheme}
                         onValueChange={toggleTheme}
                         style={styles.toggle}
                     />
@@ -81,7 +81,7 @@ const Settings: React.FC = () => {
                     </Dialog>
                 </Portal>
             </View>
-        </ScreenWrapper >
+        </ScreenWrapper>
     );
 };
 

@@ -41,6 +41,10 @@ const RootLayout: React.FC = () => (
                 name="screens/loader/index"
                 options={{ ...optionsHeaderIos, animation: 'none', headerRight: () => null }}
             />
+            <Stack.Screen
+                name="screens/error/index"
+                options={{ ...optionsHeaderIos }}
+            />
         </Stack>
     </AppProviders>
 );
