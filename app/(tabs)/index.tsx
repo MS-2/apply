@@ -29,10 +29,12 @@ const MainScreen: React.FC = () => {
     );
   }
 
-  if (hits.length <= 0 && !online) {
-    <ScreenWrapper>
-      <ErrorScreen onRetry={refetch} error={error} />
-    </ScreenWrapper>
+  if (hits.length === 0 && !online) {
+    return (
+      <ScreenWrapper>
+        <ErrorScreen onRetry={refetch} error={error} />
+      </ScreenWrapper>
+    );
   }
   return (
     <ScreenWrapper>
