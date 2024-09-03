@@ -7,6 +7,7 @@ import { ConnectionBanner } from "@/components/ConnextionBanner.tsx";
 import { ScreenWrapper } from "@/components/ScreensWrapper";
 import { useMainScreen } from "@/hooks/MainScreen";
 import { ITEM_HEIGHT } from "@/utils/constants";
+import { ErrorScreen } from "@/components/Error";
 
 const MainScreen: React.FC = () => {
   const {
@@ -17,6 +18,7 @@ const MainScreen: React.FC = () => {
     isRefetching,
     online,
     refetch,
+    error
   } = useMainScreen();
 
   if (isLoading) {
@@ -27,6 +29,11 @@ const MainScreen: React.FC = () => {
     );
   }
 
+  if (error || hits.length <= 0) {
+    <ScreenWrapper>
+      <ErrorScreen onRetry={refetch} error={error} />
+    </ScreenWrapper>
+  }
   return (
     <ScreenWrapper>
       {!online && <ConnectionBanner online={online} />}
