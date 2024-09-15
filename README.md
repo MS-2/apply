@@ -1,10 +1,13 @@
-# before starting
+# Before starting by Juan
 The lines of this project as well as its main features are based on the following wireframes 
 
 https://github.com/MS-2/apply/blob/main/wireframe.png
 https://github.com/MS-2/apply/blob/main/chall.md
 
 The fastest way to run it is using expo go (yarn start) should promt to install expo go using an android emulator or connect a physical devices using ADB 
+
+is posible to test push notifications directly copy this token ExponentPushToken[R1z5MoJloMxN_jb0gPeis_] and pasting in https://expo.dev/notifications just 
+paste the Token and then write some title and then hitsend notification
 
 # Welcome to your Expo app 👋
 
