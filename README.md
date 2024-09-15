@@ -1,3 +1,11 @@
+# before starting
+The lines of this project as well as its main features are based on the following wireframes 
+
+https://github.com/MS-2/apply/blob/main/wireframe.png
+https://github.com/MS-2/apply/blob/main/chall.md
+
+The fastest way to run it is using expo go (yarn start) should promt to install expo go using an android emulator or connect a physical devices using ADB 
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
