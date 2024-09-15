@@ -24,7 +24,11 @@ export const useMainScreen = () => {
           const hits = await getHits();
           setHits(hits);
           if (isInitialLoad && hits.length === 0) {
-            setIsInitialLoad(false); // Prevent refetch loop
+            if (!isOnline) {
+              setIsInitialLoad(false);
+              return;
+            }
+            setIsInitialLoad(false); // Evitar el ciclo infinito
             router.push("/screens/loader");
           }
         } catch (error) {
@@ -33,7 +37,7 @@ export const useMainScreen = () => {
         }
       };
       setData();
-    }, [])
+    }, [isOnline])
   );
 
   // Functions to handle swipe actions
