@@ -23,13 +23,12 @@ export const useMainScreen = () => {
         try {
           const hits = await getHits();
           setHits(hits);
-          if (isInitialLoad && hits.length === 0 && isOnline) {
+          if (isInitialLoad && hits.length === 0) {
             setIsInitialLoad(false); // Prevent refetch loop
             router.push("/screens/loader");
-          } else if (!isOnline && hits.length === 0) {
-            router.push("/screens/error");
           }
         } catch (error) {
+          setIsInitialLoad(false);
           console.error("Error fetching hits:", error);
         }
       };

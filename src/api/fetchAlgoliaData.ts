@@ -40,6 +40,7 @@ export const fetchData = async (
     saveHits(sanitizedPosts);
     return sanitizedPosts;
   } catch (error) {
-    throw new Error(`Failed to fetch data: ${error}`);
+    console.error(`Failed to fetch data: ${error}`);
+    return [];
   }
 };

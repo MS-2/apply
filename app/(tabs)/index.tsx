@@ -1,9 +1,8 @@
 import React from "react";
 import { RefreshControl } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import { ActivityIndicator, Text } from "react-native-paper";
 import { FlashList } from "@shopify/flash-list";
 import { ArticleCard } from "@/components/ArticlesCard";
-import { ConnectionBanner } from "@/components/ConnextionBanner.tsx";
 import { ScreenWrapper } from "@/components/ScreensWrapper";
 import { useMainScreen } from "@/hooks/MainScreen";
 import { ITEM_HEIGHT } from "@/utils/constants";
@@ -16,7 +15,8 @@ const MainScreen: React.FC = () => {
     isLoading,
     isRefetching,
     online,
-    refetch
+    refetch,
+    error
   } = useMainScreen();
 
   if (isLoading) {
@@ -27,9 +27,14 @@ const MainScreen: React.FC = () => {
     );
   }
 
+  if (!online && hits.length === 0) {
+    <ScreenWrapper>
+      <Text>{error?.message}</Text>
+    </ScreenWrapper>
+  }
+
   return (
     <ScreenWrapper>
-      {!online && <ConnectionBanner online={online} />}
       <FlashList
         contentInsetAdjustmentBehavior="automatic"
         data={hits}
