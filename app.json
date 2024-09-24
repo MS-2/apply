@@ -20,7 +20,8 @@
         "foregroundImage": "./assets/images/leonardoIAI.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.ms2.apply"
+      "package": "com.ms2.apply",
+      "versionCode": 2
     },
     "web": {
       "bundler": "metro",
