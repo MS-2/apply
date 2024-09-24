@@ -5,6 +5,7 @@ import { ScreenWrapper } from "@/components/ScreensWrapper";
 import { useUserPreferencesContext } from "@/providers/UserPreferences";
 import { useNotifications } from "@/providers/NotificationProvider";
 import { useSettings } from "@/hooks/SettingsScreen";
+import { Link } from "expo-router";
 
 const Settings: React.FC = () => {
     const { selectedPreferences, togglePreference, toggleTheme, isLightTheme } = useUserPreferencesContext();
@@ -80,6 +81,11 @@ const Settings: React.FC = () => {
                         </Dialog.Actions>
                     </Dialog>
                 </Portal>
+            </View>
+            <View style={{ height: 50, justifyContent: "center", alignItems: "center" }}>
+                <Link href='https://ms-2.github.io/politicas/' style={{ color: 'white' }}>
+                    Privacy Policy / Contact Info
+                </Link>
             </View>
         </ScreenWrapper>
     );
