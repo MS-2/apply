@@ -21,7 +21,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.ms2.apply",
-      "versionCode": 2
+      "versionCode": 3
     },
     "web": {
       "bundler": "metro",
